@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Алена Комлева](https://up.htmlacademy.ru/javascript/29/user/1767963).
-* Наставник: `Егор Глебов`(https://htmlacademy.ru/profile/id212499).
+* Наставник: `Евгений Казаков`(https://htmlacademy.ru/profile/id343981).
 
 ---
 
