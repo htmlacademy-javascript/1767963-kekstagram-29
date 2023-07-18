@@ -1,11 +1,11 @@
-// проверка длины строки
-const string = 'строка';
-//строка должна быть не меньше определенной длины?
-let result;
-result = (string.length <= 20) ? 'Строка нужной длины' : 'Строка неподходит';
-//палиндром
-let newString = toLowerCase(replaceAll(string));
+//длина строки
+let stringLength = function (string, maxSimbols) {
+  if (string.length <= maxSimbols) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
-for (let i = newString.length - 1; i === 0; i = i - 1) {
-
-}
+let result = stringLength('ggg hhtht ertw', 20);
+console.log (result);
