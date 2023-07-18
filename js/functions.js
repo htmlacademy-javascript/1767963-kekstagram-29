@@ -13,14 +13,18 @@ console.log (result);
 //палиндром
 let polyString = function (string) {
   let normalString = string.replaceAll(' ', '').toUpperCase();
-  return normalString;
+  let reversPoly = '';
+
+  for (let simbolCounter = normalString.length - 1; simbolCounter >= 0; simbolCounter = simbolCounter - 1) {
+    reversPoly += normalString.at(simbolCounter);
+  }
+
+  return normalString === reversPoly;
 };
 
 let poly = polyString('Лёша на полке клопа нашёл ');
+let poly2 = polyString('ckjdf ');
 console.log (poly);
-let reversPoly = '';
+console.log (poly2);
 
-for (let simbolCounter = poly.length - 1; simbolCounter >= 0; simbolCounter = simbolCounter - 1) {
-  reversPoly += poly.at(simbolCounter);
-}
 
