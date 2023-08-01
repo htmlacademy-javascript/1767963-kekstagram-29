@@ -26,5 +26,3 @@ let poly = polyString('Лёша на полке клопа нашёл ');
 let poly2 = polyString('ckjdf ');
 console.log (poly);
 console.log (poly2);
-
-
