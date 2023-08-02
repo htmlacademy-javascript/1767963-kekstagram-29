@@ -28,6 +28,8 @@ const MESSAGE = ['Всё отлично!',
 const DESCRIPTION = ['развитие ценностей.', 'значение совершенной', 'Активно развивая активности', 'Полет с их данными', 'возрастает необходимость', 'общества нашей неузнаваемости',
 'рост сомнений', 'значение мира', 'совершенный статус'];
 
+const RANDOM_PHOTO_OBJECT_COUNT = 25;
+
 const getRandomInteger = (a, b) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -35,12 +37,25 @@ const getRandomInteger = (a, b) => {
   return Math.floor(result);
 };
 
+/*const createRandomIdFromRangeGenerator = (a, b) => {
+  const previousValues = [];
+
+  return function () {
+    let currentValue = getRandomInteger(a, b);
+    while (previousValues.includes(currentValue)) {
+      currentValue = getRandomInteger(a, b);
+    }
+    previousValues.push(currentValue);
+    return currentValue;
+  };
+};*/
+
 
 const photoObject = () => {
   const randomNameIndex = getRandomInteger(0, NAMES.length - 1);
   const randomMessageIndex = getRandomInteger(0, MESSAGE.length - 1);
   const randomDescriptionIndex = getRandomInteger(0, DESCRIPTION.length - 1);
-  const randomIndex = getRandomInteger(1, 25);
+  const randomIndex = getRandomInteger(1, 25); /*не получаются неповторяющиеся, неочень разобралась в демонстрации((*/
   const randomIndexAvatar = getRandomInteger(1, 6);
   const randomLikes = getRandomInteger(0, 300);
 
@@ -56,6 +71,8 @@ const photoObject = () => {
   };
 };
 
+const randomPhotoObject = Array.from({length: RANDOM_PHOTO_OBJECT_COUNT}, photoObject);
+
 console.log(
-  photoObject()
+  randomPhotoObject
 );
