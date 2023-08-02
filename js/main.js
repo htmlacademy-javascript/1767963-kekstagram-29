@@ -20,18 +20,19 @@ const getRandomInteger = (a, b) => {
   return Math.floor(result);
 };
 
-/*const createRandomIdFromRangeGenerator = (a, b) => {
-  const previousValues = [];
+const commentsObject = (value, index) => {
+  const randomIndexAvatar = getRandomInteger(1, 6);
+  const randomMessageIndex = getRandomInteger(0, MESSAGE.length - 1);
+  const randomNameIndex = getRandomInteger(0, NAMES.length - 1);
 
-  return function () {
-    let currentValue = getRandomInteger(a, b);
-    while (previousValues.includes(currentValue)) {
-      currentValue = getRandomInteger(a, b);
-    }
-    previousValues.push(currentValue);
-    return currentValue;
+  return {
+    id: index + 1,
+    avatar: 'img/avatar-' + randomIndexAvatar + '.svg',
+    message: MESSAGE[randomMessageIndex],
+    name: NAMES[randomNameIndex],
   };
-};*/
+};
+
 
 const photoObject = (value, index) => {
   const randomNameIndex = getRandomInteger(0, NAMES.length - 1);
@@ -39,13 +40,14 @@ const photoObject = (value, index) => {
   const randomDescriptionIndex = getRandomInteger(0, DESCRIPTION.length - 1);
   const randomIndexAvatar = getRandomInteger(1, 6);
   const randomLikes = getRandomInteger(0, 300);
+  const randomComments = Array.from({length: getRandomInteger(0, 30)}, commentsObject);
 
   return {
     id: index + 1,
     url: 'photos/' + (index + 1) + '.jpg',
     description: DESCRIPTION[randomDescriptionIndex],
     likes: randomLikes,
-    comments: '', /*это обьект в обьекте? как сделать несколько? */
+    comments: randomComments,
     avatar: 'img/avatar-' + randomIndexAvatar + '.svg',
     message: MESSAGE[randomMessageIndex], /*как сделать или два? */
     name: NAMES[randomNameIndex],
