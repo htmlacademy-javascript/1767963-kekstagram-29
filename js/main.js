@@ -23,15 +23,27 @@ const getRandomInteger = (a, b) => {
   return Math.floor(result);
 };
 
+const generateRandomMessage = () => {
+  const messageCount = getRandomInteger(1,2);
+  let message = '';
+
+  for(let i = 0; i < messageCount; i++) {
+    const randomMessageIndex = getRandomInteger(0, MESSAGE.length - 1);
+    message = message + MESSAGE[randomMessageIndex];
+  }
+
+  return message;
+};
+
 const commentsObject = (value, index) => {
   const randomIndexAvatar = getRandomInteger(1, 6);
-  const randomMessageIndex = getRandomInteger(0, MESSAGE.length - 1);
+  /*const randomMessageIndex = getRandomInteger(0, MESSAGE.length - 1);*/
   const randomNameIndex = getRandomInteger(0, NAMES.length - 1);
 
   return {
     id: index + 1,
-    avatar: 'img/avatar-' + randomIndexAvatar + '.svg',
-    message: MESSAGE[randomMessageIndex],
+    avatar: `img/avatar-/${(randomIndexAvatar)}.svg`, /*'img/avatar-' + randomIndexAvatar + '.svg',*/
+    message: generateRandomMessage()/*MESSAGE[randomMessageIndex]*/,
     name: NAMES[randomNameIndex],
   };
 };
@@ -47,12 +59,12 @@ const photoObject = (value, index) => {
 
   return {
     id: index + 1,
-    url: 'photos/' + (index + 1) + '.jpg',
+    url: `photos/${(index + 1)}.jpg`,
     description: DESCRIPTION[randomDescriptionIndex],
     likes: randomLikes,
     comments: randomComments,
-    avatar: 'img/avatar-' + randomIndexAvatar + '.svg',
-    message: MESSAGE[randomMessageIndex], /*как сделать или два? */
+    avatar: `img/avatar-/${(randomIndexAvatar)}.svg`, /*'img/avatar-' + randomIndexAvatar + '.svg',*/
+    message: MESSAGE[randomMessageIndex], /*тут же не надо делать "или два" как в старом комменте?*/
     name: NAMES[randomNameIndex],
   };
 };
