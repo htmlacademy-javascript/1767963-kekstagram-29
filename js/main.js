@@ -1,3 +1,8 @@
 import './functions.js';
-import './data.js';
-import './data.js';
+import { createPhotos } from './data.js';
+
+const randomPhotoObject = createPhotos();
+
+console.log(
+  randomPhotoObject
+);

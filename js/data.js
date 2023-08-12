@@ -70,8 +70,11 @@ const photoObject = (value, index) => {
   };
 };
 
-const randomPhotoObject = Array.from({length: RANDOM_PHOTO_OBJECT_COUNT}, photoObject);
+const createPhotos = () => Array.from({length: RANDOM_PHOTO_OBJECT_COUNT}, photoObject);
 
-console.log(
-  randomPhotoObject
-);
+export { createPhotos };
+// const randomPhotoObject = Array.from({length: RANDOM_PHOTO_OBJECT_COUNT}, photoObject);
+
+// console.log(
+//   randomPhotoObject
+// );
