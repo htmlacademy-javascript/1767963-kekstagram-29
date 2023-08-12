@@ -1,3 +1,5 @@
+import {getRandomInteger} from './util.js';
+
 const NAMES = ['Гор', 'Исида', 'Сет', 'Маат', 'Бастет', 'Осирис', 'Птах', 'Ра', 'Сехмет', 'Тот', 'Хеп', 'Ях', 'Шу', 'Хаухет', 'Хатор', 'Серкет', 'Нейт', 'Монту', 'Геб', 'Бенну', 'Бат', 'Атум', 'Атон', 'Ба', 'Атон'];
 
 const MESSAGE = ['Всё отлично!',
@@ -15,12 +17,12 @@ const DESCRIPTION = ['развитие ценностей.', 'значение �
 
 const RANDOM_PHOTO_OBJECT_COUNT = 25;
 
-const getRandomInteger = (a, b) => {
+/*  const getRandomInteger = (a, b) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
   const result = Math.random() * (upper - lower + 1) + lower;
   return Math.floor(result);
-}; /* не поняла что еще перенесено в образце */
+}; */
 
 const generateRandomMessage = () => {
   const messageCount = getRandomInteger(1,2);
