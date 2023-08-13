@@ -35,14 +35,19 @@ let getTimeArray = function (time) {
 };
 
 let comparisonTime = function (startTime, endTime, meetTime, long) {
-  let startMin = getTimeArray (startTime);
-  let endMin = getTimeArray (endTime);
-  let meetMin = getTimeArray (meetTime);
+  let startMin = getTimeArray(startTime);
+  let endMin = getTimeArray(endTime);
+  let meetMin = getTimeArray(meetTime);
 
-  if (startMin >= meetMin && endMin >= meetMin && endMin <= (meetMin + long)) {
-    return false;
-  } else {
+  if (startMin <= meetMin && endMin >= (meetMin + long)) {
     return true;
+  } else {
+    return false;
   }
 };
 
+console.log(comparisonTime('08:00', '17:30', '14:00', 90));
+console.log(comparisonTime('8:0', '10:0', '8:0', 120));
+console.log(comparisonTime('08:00', '14:30', '14:00', 90));
+console.log(comparisonTime('14:00', '17:30', '08:0', 90));
+console.log(comparisonTime('8:00', '17:30', '08:00', 900));
