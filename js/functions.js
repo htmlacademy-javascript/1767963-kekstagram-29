@@ -26,3 +26,24 @@ let poly = polyString('Лёша на полке клопа нашёл ');
 let poly2 = polyString('ckjdf ');
 console.log (poly);
 console.log (poly2);
+
+//делу время
+const getTimeArray = function (time) {
+  const createArray = time.split(':');
+  const getMinutes = (parseInt(createArray[0]) * 60) + parseInt(createArray[1]);
+  return getMinutes;
+};
+
+const comparisonTime = function (startTime, endTime, meetTime, long) {
+  const startMin = getTimeArray(startTime);
+  const endMin = getTimeArray(endTime);
+  const meetMin = getTimeArray(meetTime);
+
+  return startMin <= meetMin && endMin >= (meetMin + long);
+};
+
+console.log(comparisonTime('08:00', '17:30', '14:00', 90));
+console.log(comparisonTime('8:0', '10:0', '8:0', 120));
+console.log(comparisonTime('08:00', '14:30', '14:00', 90));
+console.log(comparisonTime('14:00', '17:30', '08:0', 90));
+console.log(comparisonTime('8:00', '17:30', '08:00', 900));
