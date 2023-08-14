@@ -28,22 +28,18 @@ console.log (poly);
 console.log (poly2);
 
 //делу время
-let getTimeArray = function (time) {
-  let createArray = time.split(':');
-  let getMinutes = (parseInt(createArray[0]) * 60) + parseInt(createArray[1]);
+const getTimeArray = function (time) {
+  const createArray = time.split(':');
+  const getMinutes = (parseInt(createArray[0]) * 60) + parseInt(createArray[1]);
   return getMinutes;
 };
 
-let comparisonTime = function (startTime, endTime, meetTime, long) {
-  let startMin = getTimeArray(startTime);
-  let endMin = getTimeArray(endTime);
-  let meetMin = getTimeArray(meetTime);
+const comparisonTime = function (startTime, endTime, meetTime, long) {
+  const startMin = getTimeArray(startTime);
+  const endMin = getTimeArray(endTime);
+  const meetMin = getTimeArray(meetTime);
 
-  if (startMin <= meetMin && endMin >= (meetMin + long)) {
-    return true;
-  } else {
-    return false;
-  }
+  return startMin <= meetMin && endMin >= (meetMin + long);
 };
 
 console.log(comparisonTime('08:00', '17:30', '14:00', 90));
