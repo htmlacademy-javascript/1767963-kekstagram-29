@@ -1,9 +1,8 @@
 import './functions.js';
 import { createPhotos } from './data.js';
-import './picture.js';
+import { renderPhotos } from'./picture.js';
 
-const randomPhotoObject = createPhotos();
 
-console.log(
-  randomPhotoObject
-);
+const randomPhotoObjects = createPhotos();//генерирует обьекты с фотографиями
+
+renderPhotos(randomPhotoObjects);//отрисовывает фото
