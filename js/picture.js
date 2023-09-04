@@ -1,4 +1,3 @@
-import './big-picture.js';
 const photosListElement = document.querySelector('.pictures'); //нашли большую секцию
 const PhotoTemplate = document.querySelector('#picture').content.querySelector('.picture'); //нашти темплейт и внутри темплейта
 

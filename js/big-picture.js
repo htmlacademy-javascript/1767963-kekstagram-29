@@ -1,5 +1,5 @@
 import './picture.js';
-import {renderPhotos} from './picture.js';
+import { renderPhotos } from'./picture.js';
 //const bigPicture = document.querySelector('.big-picture');
 //bigPicture.classList.remove('hidden');
 //Заведите модуль, который будет отвечать за отрисовку окна с полноразмерным изображением.
@@ -32,23 +32,99 @@ import {renderPhotos} from './picture.js';
 //Напишите код для закрытия окна по нажатию клавиши Esc и клике по иконке закрытия.
 
 //Подключите модуль в проект.
-const userModalElement = document.querySelector('.big-picture');
-const userModalOpenElement = document.querySelector('.picture_img');
-const userModalCloseElement = userModalElement.querySelector('.big-picture__cancel');
+const userPictureElement = document.querySelector('.big-picture');
 
-userModalOpenElement.addEventListener('click', () => {
-  userModalElement.classList.remove('hidden');
+const openCloseBigPicture = (renderPhotos) => {
+  const userPictureOpenElement = document.querySelector('.picture__img');
+  const userPictureCloseElement = userPictureElement.querySelector('.big-picture__cancel');
+
+  const onDocumentKeydown = (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      closeUserModal();
+    }
+  };
+
+
+  function openBigPicture () { //открывает модальное окно
+    const body = document.querySelector('body');
+    body.classList.add('modal-open');//так добавить для боди??
+    userPicturelElement.classList.remove('hidden');
+
+    document.addEventListener('keydown', (evt) => {
+      if (isEscapeKey(evt)) {//if (isEnterKey(evt)) как сюда добавить открытие? tabindex="0" ненадо? ссылка и так мб в фокусе
+        evt.preventDefault();
+        userPictureElement.classList.add('hidden');
+      }
+    });
+};
+
+  function closeBigPicture () {
+    userPicturelElement.classList.add('hidden');
+    document.addEventListener('keydown', (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        userPictureElement.classList.add('hidden');
+      }
+    });
+  // 1. Скрыть окно
+  // 2. Удалить обработчики для закрытия
+  // 3. Прочая логика
+};
+
+userPictureOpenElement.addEventListener('click', () => {
+    openBigPicture ();
 });
 
-userModalCloseElement.addEventListener('click', () => {
-  userModalElement.classList.add('hidden');
-});
-
-document.addEventListener('keydown', (evt) => {
-  if (evt.key === 'Escape') {
-    evt.preventDefault();
-    userModalElement.classList.add('hidden');
+userPictureOpenElement.addEventListener('keydown', (evt) => {
+    if (isEnterKey(evt)) {
+      openUserModal();
   }
 });
 
+userPictureCloseElement.addEventListener('click', () => {
+  closeBigPicture();
+});
 
+document.addEventListener('keydown', (evt) => {
+  if (evt.key === 'Escape') { //if (isEnterKey(evt)) как сюда добавить открытие? tabindex="0" ненадо? ссылка и так мб в фокусе
+    closeBigPicture();
+  }
+});};
+//данные для окна просмотра
+const renderBigPicture = () => {
+  const userPictureFragment = document.createDocumentFragment();
+
+  photos.forEach(({url, description, likes, comments}) => {
+    const bigPictureElement = PhotoTemplate.cloneNode(true);//???нам же ненадо cloneNode здесь? это же не шаблон?
+
+    bigPictureElement.querySelector('.big-picture__img').src = url; //передаем переменные из дата джс
+    bigPictureElement.querySelector('.social__caption').alt = description;
+    bigPictureElement.querySelector('.likes-count').textContent = likes;
+    bigPictureElement.querySelector('.comments-count').textContent = comments.length;
+    userPictureElement.appendChild(bigPictureElement); //клонируем элемент и размножаем
+  });
+
+
+  userPictureElement.appendChild(userPictureFragment);
+};
+//комментарий
+const renderComment = () => {
+  const userCommentFragment = document.createDocumentFragment();
+
+  photos.forEach(({avatar, name, comments}) => {
+    const сommentElement = PhotoTemplate.cloneNode(true);//???
+
+    сommentElement.querySelector('.social__picture').src = avatar; //передаем переменные из дата джс
+    сommentElement.querySelector('.avatar').alt = name;
+    сommenteElement.querySelector('.social__text').textContent = comments;
+    userCommentElement.appendChild(сommentElement); //клонируем элемент и размножаем
+  });
+
+
+  userCommentElement.appendChild(userCommentFragment);
+};
+
+export { openCloseBigPicture };
+export { renderBigPicture };
+export { renderComment };
