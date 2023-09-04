@@ -1,5 +1,7 @@
-const bigPicture = document.querySelector('.big-picture');
-bigPicture.classList.remove('hidden');
+import './picture.js';
+import {renderPhotos} from './picture.js';
+//const bigPicture = document.querySelector('.big-picture');
+//bigPicture.classList.remove('hidden');
 //Заведите модуль, который будет отвечать за отрисовку окна с полноразмерным изображением.
 
 //Окно должно открываться при клике на миниатюру. Данные для окна (изображение, комментарии, лайки и так далее) берите из того же объекта, который использовался для отрисовки соответствующей миниатюры.
@@ -30,3 +32,23 @@ bigPicture.classList.remove('hidden');
 //Напишите код для закрытия окна по нажатию клавиши Esc и клике по иконке закрытия.
 
 //Подключите модуль в проект.
+const userModalElement = document.querySelector('.big-picture');
+const userModalOpenElement = document.querySelector('.picture_img');
+const userModalCloseElement = userModalElement.querySelector('.big-picture__cancel');
+
+userModalOpenElement.addEventListener('click', () => {
+  userModalElement.classList.remove('hidden');
+});
+
+userModalCloseElement.addEventListener('click', () => {
+  userModalElement.classList.add('hidden');
+});
+
+document.addEventListener('keydown', (evt) => {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    userModalElement.classList.add('hidden');
+  }
+});
+
+
