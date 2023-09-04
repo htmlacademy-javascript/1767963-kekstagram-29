@@ -92,33 +92,33 @@ document.addEventListener('keydown', (evt) => {
   }
 });};
 //данные для окна просмотра
-const renderBigPicture = () => {
+const renderBigPicture = (picture) => {
   const userPictureFragment = document.createDocumentFragment();
 
-  photos.forEach(({url, description, likes, comments}) => {
+  picture.forEach(({url, description, likes, comments}) => {
     const bigPictureElement = PhotoTemplate.cloneNode(true);//???нам же ненадо cloneNode здесь? это же не шаблон?
 
     bigPictureElement.querySelector('.big-picture__img').src = url; //передаем переменные из дата джс
     bigPictureElement.querySelector('.social__caption').alt = description;
     bigPictureElement.querySelector('.likes-count').textContent = likes;
     bigPictureElement.querySelector('.comments-count').textContent = comments.length;
-    userPictureElement.appendChild(bigPictureElement); //клонируем элемент и размножаем
+    userPictureElement.appendChild(bigPictureElement); //нам же не надо размножать шаблон? он должен срабатывать при открытии
   });
 
 
   userPictureElement.appendChild(userPictureFragment);
 };
 //комментарий
-const renderComment = () => {
+const renderComment = (comment) => {
   const userCommentFragment = document.createDocumentFragment();
 
-  photos.forEach(({avatar, name, comments}) => {
+  comment.forEach(({avatar, name, comments}) => {
     const сommentElement = PhotoTemplate.cloneNode(true);//???
 
     сommentElement.querySelector('.social__picture').src = avatar; //передаем переменные из дата джс
     сommentElement.querySelector('.avatar').alt = name;
     сommenteElement.querySelector('.social__text').textContent = comments;
-    userCommentElement.appendChild(сommentElement); //клонируем элемент и размножаем
+    userCommentElement.appendChild(сommentElement); ///нам же не надо размножать шаблон? он должен срабатывать при открытии
   });
 
 
