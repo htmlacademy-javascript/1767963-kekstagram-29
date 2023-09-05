@@ -34,22 +34,30 @@ import { renderPhotos } from'./picture.js';
 //Подключите модуль в проект.
 const userPictureElement = document.querySelector('.big-picture');
 
-const openCloseBigPicture = (renderPhotos) => {
+function setupHandlers() {
+  document.querySelectorAll('.picture').forEach(element => {
+    element.addEventListener('click', () => {
+      openBigPicture();
+    });
+  });
+}
+
+const onDocumentKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    closeUserModal();
+  }
+};
+
+const openCloseBigPicture = () => {//нужен ди аргумент?
   const userPictureOpenElement = document.querySelector('.picture__img');
   const userPictureCloseElement = userPictureElement.querySelector('.big-picture__cancel');
-
-  const onDocumentKeydown = (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      closeUserModal();
-    }
-  };
 
 
   function openBigPicture () { //открывает модальное окно
     const body = document.querySelector('body');
     body.classList.add('modal-open');//так добавить для боди??
-    userPicturelElement.classList.remove('hidden');
+    userPictureElement.classList.remove('hidden');
 
     document.addEventListener('keydown', (evt) => {
       if (isEscapeKey(evt)) {//if (isEnterKey(evt)) как сюда добавить открытие? tabindex="0" ненадо? ссылка и так мб в фокусе
@@ -57,10 +65,10 @@ const openCloseBigPicture = (renderPhotos) => {
         userPictureElement.classList.add('hidden');
       }
     });
-};
+  }
 
   function closeBigPicture () {
-    userPicturelElement.classList.add('hidden');
+    userPictureElement.classList.add('hidden');
     document.addEventListener('keydown', (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
@@ -70,27 +78,28 @@ const openCloseBigPicture = (renderPhotos) => {
   // 1. Скрыть окно
   // 2. Удалить обработчики для закрытия
   // 3. Прочая логика
-};
+  }
 
-userPictureOpenElement.addEventListener('click', () => {
+  /*userPictureOpenElement.addEventListener('click', () => {
     openBigPicture ();
-});
+});*/
 
-userPictureOpenElement.addEventListener('keydown', (evt) => {
+  userPictureOpenElement.addEventListener('keydown', (evt) => {
     if (isEnterKey(evt)) {
       openUserModal();
-  }
-});
+    }
+  });
 
-userPictureCloseElement.addEventListener('click', () => {
-  closeBigPicture();
-});
-
-document.addEventListener('keydown', (evt) => {
-  if (evt.key === 'Escape') { //if (isEnterKey(evt)) как сюда добавить открытие? tabindex="0" ненадо? ссылка и так мб в фокусе
+  userPictureCloseElement.addEventListener('click', () => {
     closeBigPicture();
-  }
-});};
+  });
+
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape') { //if (isEnterKey(evt)) как сюда добавить открытие? tabindex="0" ненадо? ссылка и так мб в фокусе
+      closeBigPicture();
+    }
+  });
+};
 //данные для окна просмотра
 const renderBigPicture = (picture) => {
   const userPictureFragment = document.createDocumentFragment();
@@ -128,3 +137,4 @@ const renderComment = (comment) => {
 export { openCloseBigPicture };
 export { renderBigPicture };
 export { renderComment };
+export { setupHandlers };
