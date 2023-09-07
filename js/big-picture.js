@@ -78,5 +78,42 @@ const openCloseBigPicture = () => {
 
 };
 
+// Каждый объект с описанием фотографии содержит массив с комментариями.
+// Данные из этого массива мы вывели в соответствующую область окна полноразмерного просмотра.
+// Улучшить пользовательский интерфейс поможет кнопка «Загрузить ещё».
+
+// Покажите блоки счётчика комментариев .social__comment-count
+const socialCommentCount = document.querySelector('.social__comment-count');
+socialCommentCount.classList.remove('hidden');
+// и загрузки новых комментариев .comments-loader, убрав у них класс hidden.
+const commentLoader = document.querySelector('.comments-loader');
+commentLoader.classList.remove('hidden');
+
+
+// доработайте код по выводу списка комментариев таким образом, чтобы список показывался не полностью, а по 5 элементов,
+// и следующие 5 элементов добавлялись бы по нажатию на кнопку «Загрузить ещё».
+// Не забудьте реализовать обновление числа показанных комментариев в блоке .social__comment-count.
+
+// Обратите внимание, хотя кнопка называется «Загрузить ещё»,
+// никакой загрузки с сервера не происходит. Просто показываются следующие 5 комментариев из списка.
+
+// показываемые комментарии это функция которая должна показывать пять комментариев из списка комментариев сошал коммент,
+// начиная от последнего позанного индекса комментария
+
+const displayComments = () => {
+  const commentsArray = Array.from(document.querySelector('.social__comments'));//показываемые элементы массива с коментариями
+  if (commentsArray.length >= 5) {
+    commentsArray.slice(0, 5);
+  }; //элементы с индексом больше пяти скрыть
+}
+//const lastIndex = displayComments.lastIndexOf();
+
+const loadMoreButton = document.querySelector('.social__comments-loader');//нашла кнопку
+function loadMore () {
+  loadMoreButton.addEventListener('click', () => {
+    //то что происхлдит при клике на кнопку
+  });
+};
+
 export { openCloseBigPicture };
 export { setupHandlers };
