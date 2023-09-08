@@ -1,6 +1,7 @@
 //После открытия окна спрячьте блоки счётчика комментариев .social__comment-count и загрузки новых комментариев .comments-loader, добавив им класс hidden, с ними мы разберёмся позже, в другом домашнем задании.
 const userPictureElement = document.querySelector('.big-picture');
 
+
 function isEscapeKey(evt) {
   return evt.key === 'ESC' || evt.key === 'Escape';
 }
@@ -26,17 +27,57 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
   userPictureElement.querySelector('.comments-count').textContent = comments.length;
   const commentsContainerElement = userPictureElement.querySelector('.social__comments');
 
-  const сommentTemplate = userPictureElement.querySelector('.social__comment').cloneNode(true);
+  const сommentTemplate = document.querySelector('#comment').content;
+
+  // Покажите блоки счётчика комментариев .social__comment-count
+  const socialCommentCount = document.querySelector('.social__comment-count');
+  socialCommentCount.classList.remove('hidden');
+  // и загрузки новых комментариев .comments-loader, убрав у них класс hidden.
+  const commentLoader = document.querySelector('.comments-loader');
+  commentLoader.classList.add('hidden');
+  const shownCommentsElement = document.querySelector('.comments-count-shown');
 
 
   commentsContainerElement.innerHTML = '';
-  comments.forEach(({name, avatar, message}) => {
+  const firstComments = comments.slice(0, 5); // 5 вынести в константу
+  firstComments.forEach(({name, avatar, message}) => {
     const element = сommentTemplate.cloneNode(true);
     element.querySelector('.social__picture').src = avatar; //передаем переменные из дата джс
     element.querySelector('.social__picture').alt = name;
     element.querySelector('.social__text').textContent = message;
     commentsContainerElement.appendChild(element);
   });
+
+  shownCommentsElement.textContent = firstComments.length;
+
+  if (comments.length > 5) {
+    const loadMoreButton = document.querySelector('.social__comments-loader');//нашла кнопку
+    commentLoader.classList.remove('hidden');
+
+
+    let lastIndex = firstComments.length - 1;
+    console.log('lastIndex initial:', lastIndex);
+
+    const handleLoadMoreButtonClick = () => {
+      //то что происхлдит при клике на кнопку
+      const nextComments = comments.slice(lastIndex, lastIndex + 5);
+      nextComments.forEach(({name, avatar, message}) => {
+        const element = сommentTemplate.cloneNode(true);
+        element.querySelector('.social__picture').src = avatar; //передаем переменные из дата джс
+        element.querySelector('.social__picture').alt = name;
+        element.querySelector('.social__text').textContent = message;
+        commentsContainerElement.appendChild(element);
+      });
+
+      lastIndex = lastIndex + 5 >= comments.length ? comments.length - 1 : lastIndex + 5;
+      console.log('lastIndex:', lastIndex, 'comments.length:', comments.length);
+      shownCommentsElement.textContent = lastIndex + 1;
+      if (lastIndex + 1 >= comments.length) {
+        commentLoader.classList.add('hidden');
+      }
+    };
+    loadMoreButton.addEventListener('click', handleLoadMoreButtonClick);
+  }
 }
 
 function setupHandlers(pictures) {
@@ -57,6 +98,8 @@ const openCloseBigPicture = () => {
   const userPictureCloseElement = userPictureElement.querySelector('.big-picture__cancel');
 
   function closeBigPicture () {
+    const loadMoreButton = document.querySelector('.social__comments-loader');//нашла кнопку
+    loadMoreButton.replaceWith(loadMoreButton.cloneNode(true));
     userPictureElement.classList.add('hidden');
     document.addEventListener('keydown', (evt) => {
       if (evt.key === 'Escape') {
