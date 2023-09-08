@@ -1,6 +1,7 @@
 //После открытия окна спрячьте блоки счётчика комментариев .social__comment-count и загрузки новых комментариев .comments-loader, добавив им класс hidden, с ними мы разберёмся позже, в другом домашнем задании.
 const userPictureElement = document.querySelector('.big-picture');
 
+
 function isEscapeKey(evt) {
   return evt.key === 'ESC' || evt.key === 'Escape';
 }
@@ -26,17 +27,57 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
   userPictureElement.querySelector('.comments-count').textContent = comments.length;
   const commentsContainerElement = userPictureElement.querySelector('.social__comments');
 
-  const сommentTemplate = userPictureElement.querySelector('.social__comment').cloneNode(true);
+  const сommentTemplate = document.querySelector('#comment').content;
+
+  // Покажите блоки счётчика комментариев .social__comment-count
+  const socialCommentCount = document.querySelector('.social__comment-count');
+  socialCommentCount.classList.remove('hidden');
+  // и загрузки новых комментариев .comments-loader, убрав у них класс hidden.
+  const commentLoader = document.querySelector('.comments-loader');
+  commentLoader.classList.add('hidden');
+  const shownCommentsElement = document.querySelector('.comments-count-shown');
 
 
   commentsContainerElement.innerHTML = '';
-  comments.forEach(({name, avatar, message}) => {
+  const firstComments = comments.slice(0, 5); // 5 вынести в константу
+  firstComments.forEach(({name, avatar, message}) => {
     const element = сommentTemplate.cloneNode(true);
     element.querySelector('.social__picture').src = avatar; //передаем переменные из дата джс
     element.querySelector('.social__picture').alt = name;
     element.querySelector('.social__text').textContent = message;
     commentsContainerElement.appendChild(element);
   });
+
+  shownCommentsElement.textContent = firstComments.length;
+
+  if (comments.length > 5) {
+    const loadMoreButton = document.querySelector('.social__comments-loader');//нашла кнопку
+    commentLoader.classList.remove('hidden');
+
+
+    let lastIndex = firstComments.length - 1;
+    console.log('lastIndex initial:', lastIndex);
+
+    const handleLoadMoreButtonClick = () => {
+      //то что происхлдит при клике на кнопку
+      const nextComments = comments.slice(lastIndex, lastIndex + 5);
+      nextComments.forEach(({name, avatar, message}) => {
+        const element = сommentTemplate.cloneNode(true);
+        element.querySelector('.social__picture').src = avatar; //передаем переменные из дата джс
+        element.querySelector('.social__picture').alt = name;
+        element.querySelector('.social__text').textContent = message;
+        commentsContainerElement.appendChild(element);
+      });
+
+      lastIndex = lastIndex + 5 >= comments.length ? comments.length - 1 : lastIndex + 5;
+      console.log('lastIndex:', lastIndex, 'comments.length:', comments.length);
+      shownCommentsElement.textContent = lastIndex + 1;
+      if (lastIndex + 1 >= comments.length) {
+        commentLoader.classList.add('hidden');
+      }
+    };
+    loadMoreButton.addEventListener('click', handleLoadMoreButtonClick);
+  }
 }
 
 function setupHandlers(pictures) {
@@ -57,6 +98,8 @@ const openCloseBigPicture = () => {
   const userPictureCloseElement = userPictureElement.querySelector('.big-picture__cancel');
 
   function closeBigPicture () {
+    const loadMoreButton = document.querySelector('.social__comments-loader');//нашла кнопку
+    loadMoreButton.replaceWith(loadMoreButton.cloneNode(true));
     userPictureElement.classList.add('hidden');
     document.addEventListener('keydown', (evt) => {
       if (evt.key === 'Escape') {
@@ -76,43 +119,6 @@ const openCloseBigPicture = () => {
     }
   });
 
-};
-
-// Каждый объект с описанием фотографии содержит массив с комментариями.
-// Данные из этого массива мы вывели в соответствующую область окна полноразмерного просмотра.
-// Улучшить пользовательский интерфейс поможет кнопка «Загрузить ещё».
-
-// Покажите блоки счётчика комментариев .social__comment-count
-const socialCommentCount = document.querySelector('.social__comment-count');
-socialCommentCount.classList.remove('hidden');
-// и загрузки новых комментариев .comments-loader, убрав у них класс hidden.
-const commentLoader = document.querySelector('.comments-loader');
-commentLoader.classList.remove('hidden');
-
-
-// доработайте код по выводу списка комментариев таким образом, чтобы список показывался не полностью, а по 5 элементов,
-// и следующие 5 элементов добавлялись бы по нажатию на кнопку «Загрузить ещё».
-// Не забудьте реализовать обновление числа показанных комментариев в блоке .social__comment-count.
-
-// Обратите внимание, хотя кнопка называется «Загрузить ещё»,
-// никакой загрузки с сервера не происходит. Просто показываются следующие 5 комментариев из списка.
-
-// показываемые комментарии это функция которая должна показывать пять комментариев из списка комментариев сошал коммент,
-// начиная от последнего позанного индекса комментария
-
-const displayComments = () => {
-  const commentsArray = Array.from(document.querySelector('.social__comments'));//показываемые элементы массива с коментариями
-  if (commentsArray.length >= 5) {
-    commentsArray.slice(0, 5);
-  }; //элементы с индексом больше пяти скрыть
-}
-//const lastIndex = displayComments.lastIndexOf();
-
-const loadMoreButton = document.querySelector('.social__comments-loader');//нашла кнопку
-function loadMore () {
-  loadMoreButton.addEventListener('click', () => {
-    //то что происхлдит при клике на кнопку
-  });
 };
 
 export { openCloseBigPicture };

@@ -9,7 +9,7 @@
   <title>Кекстаграм</title>
 </head>
 
-<body>
+<>
   <main>
 
     <!-- Фильтрация изображений от других пользователей -->
@@ -154,7 +154,7 @@
           </div>
 
           <!-- Комментарии к изображению -->
-          <div class="social__comment-count">5 из <span class="comments-count">125</span> комментариев</div>
+          <div class="social__comment-count"><span class="comments-count-shown">5</span> из <span class="comments-count">125</span> комментариев</div>
           <ul class="social__comments">
             <li class="social__comment">
               <img class="social__picture" src="img/avatar-4.svg" alt="Аватар комментатора фотографии" width="35" height="35">
@@ -226,6 +226,14 @@
       </div>
     </section>
   </template>
+
+  <template id="comment">
+    <li class="social__comment">
+      <img class="social__picture" src="" alt="" width="35" height="35">
+      <p class="social__text"></p>
+    </li>
+  </template>
+
 
   <script src="js/main.js" type="module"></script>
   <script src="js/functions.js"></script>
