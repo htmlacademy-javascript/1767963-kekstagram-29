@@ -52,3 +52,92 @@
 //  Если хотя бы один из тегов не проходит нужных проверок, показывать сообщение об ошибке.
 
 // Поля, не перечисленные в техзадании, но существующие в разметке, особой валидации не требуют.
+
+const imgUploadInput = document.querySelector('.img-upload__input');//кнопка для лисенира
+const imgUploadOverlay = document.querySelector('.img-upload__overlay');//попап с настройками фото после выьра фото
+const imgUploadBody = document.querySelector('body');//ищем боди
+const imgUploadСancel = document.querySelector('.img-upload__cancel'); //кнопка закрытия
+
+function isEscapeKey(evt) {
+  return evt.key === 'ESC' || evt.key === 'Escape';
+}
+
+function openDownloadForm () {
+  imgUploadBody.classList.add('modal-open');//добавляем класс у боди
+  imgUploadOverlay.classList.remove('hidden');//показываем попап
+}
+
+imgUploadInput.addEventListener('change', () => {
+  openDownloadForm();
+});
+
+function closeDownloadForm () {//при закрытии нужно сбрасывать значения всех полей
+  imgUploadBody.classList.remove('modal-open');//убираем класс у боди
+  imgUploadOverlay.classList.add('hidden');//скрываем попап
+
+  document.addEventListener('keydown', (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      imgUploadBody.classList.remove('modal-open');
+      imgUploadOverlay.classList.add('hidden');//так закрывать по ESC?
+    }
+  });
+}
+
+imgUploadСancel.addEventListener('click', () => {
+  closeDownloadForm();
+});
+// Комментарий:
+// не обязателен;
+// не  больше 140 символов;
+// если фокус находится в поле ввода комментария, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
+const imgComment = document.querySelector('.text__description');
+
+const pristine = new Pristine(imgComment, {
+  classTo: 'img-upload__field-wrapper',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextClass: 'img-description__error-text',
+});
+
+imgComment.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const isValid = pristine.validate();
+  if (isValid) {
+    console.log('Можно отправлять');
+  } else {
+    console.log('Форма невалидна');
+  }
+});
+
+// Хэш-теги:
+
+// хэш-теги разделяются пробелами;
+// один и тот же хэш-тег не может быть использован дважды; не повторять элементы массива сравнить друг с другом
+// количество элементов массива не больше 5
+// хэш-теги необязательны;
+// если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
+const imgHashtags = document.querySelector('.text__hashtags');
+//
+const createArrayHashtags = imgHashtags.split(' ');
+const ArrayHashtagsLength = createArrayHashtags.length;
+const ArrayElementIncludes = createArrayHashtags.includes(searchElement[fromIndex = 0]);
+for (i = 0 , createArrayHashtags.includes(searchElement[fromIndex = i]) !== ArrayElementIncludes, i++;) {
+  ArrayElementIncludes = createArrayHashtags.includes(searchElement[fromIndex = i++]);//тут должна быть проверка со сравнением элементов массива на самих себя, но я запуталась
+}
+
+const regHashtag = /^#[a-zа-яё0-9]{1,19}$/i;
+console.log(regHashtag.test('#ffffvv@')); //pattern ??  pattern="/^#[a-zа-яё0-9]{1,19}$/i"
+
+//Масштаб:
+// При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value;
+// Значение должно изменяться с шагом в 25.
+//Например, если значение поля установлено в 50%, после нажатия на «+», значение должно стать равным 75%. Максимальное значение — 100%, минимальное — 25%.
+//Значение по умолчанию — 100%;
+// При изменении значения поля .scale__control--value
+//изображению внутри .img-upload__preview должен добавляться соответствующий стиль CSS,
+//который с помощью трансформации scale задаёт масштаб. Например, если в поле стоит значение 75%,
+//то в стиле изображения должно быть написано transform: scale(0.75).
+const controlSmall = document.querySelector('.scale__control--smaller');
+const controlBig = document.querySelector('.scale__control--bigger');
+const controlValue = document.querySelector('.scale__control--value');
