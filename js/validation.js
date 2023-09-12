@@ -91,7 +91,7 @@ imgUploadСancel.addEventListener('click', () => {
 // не обязателен;
 // не  больше 140 символов;
 // если фокус находится в поле ввода комментария, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
-const imgComment = document.querySelector('.text__description');
+const imgComment = document.querySelector('.img-upload__form');
 
 const pristine = new Pristine(imgComment, {
   classTo: 'img-upload__field-wrapper',
@@ -118,16 +118,33 @@ imgComment.addEventListener('submit', (evt) => {
 // хэш-теги необязательны;
 // если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
 const imgHashtags = document.querySelector('.text__hashtags');
-//
-const createArrayHashtags = imgHashtags.split(' ');
-const ArrayHashtagsLength = createArrayHashtags.length;
-const ArrayElementIncludes = createArrayHashtags.includes(searchElement[fromIndex = 0]);
-for (i = 0 , createArrayHashtags.includes(searchElement[fromIndex = i]) !== ArrayElementIncludes, i++;) {
-  ArrayElementIncludes = createArrayHashtags.includes(searchElement[fromIndex = i++]);//тут должна быть проверка со сравнением элементов массива на самих себя, но я запуталась
+
+
+const createArrayHashtags = imgHashtags.value.split(' ');
+const arrayHashtagsLength = createArrayHashtags.length;
+const comparisonArrayLength = function (){
+  if (arrayHashtagsLength <= 5) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+let valid = true;
+for (let i = 0; i < createArrayHashtags.length; i++) {
+  for (let j = i + 1; j < createArrayHashtags.length; j++) {
+    if (createArrayHashtags[i] === createArrayHashtags[j]) {
+      valid = false;
+      break;
+    }
+  }
+  if (!valid) {
+    break;
+  }
 }
 
 const regHashtag = /^#[a-zа-яё0-9]{1,19}$/i;
-console.log(regHashtag.test('#ffffvv@')); //pattern ??  pattern="/^#[a-zа-яё0-9]{1,19}$/i"
+console.log(regHashtag.test('#ffffvv')); //pattern ??  pattern="/^#[a-zа-яё0-9]{1,19}$/i"
 
 //Масштаб:
 // При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value;
@@ -141,3 +158,11 @@ console.log(regHashtag.test('#ffffvv@')); //pattern ??  pattern="/^#[a-zа-яё0
 const controlSmall = document.querySelector('.scale__control--smaller');
 const controlBig = document.querySelector('.scale__control--bigger');
 const controlValue = document.querySelector('.scale__control--value');
+
+controlValue.value = 100;
+controlSmall.addEventListener('click', () => {
+  controlValue.value - 25;
+});
+controlBig.addEventListener('click', () => {
+  controlValue.value += 25;
+});
