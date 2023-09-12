@@ -217,6 +217,13 @@ const effectElement = document.querySelector('.effect-level__value');
 //const originalElement = document.querySelector('.effects__preview--none');
 //controlValue.value = 0;
 const filterArray = document.querySelectorAll('.effects__radio');
+let element;
+for (let i = 0; i < filterArray.length; i++) {
+  if (filterArray[i].checked) {
+    element = filterArray[i];
+  }
+}
+
 
 noUiSlider.create(effectElement, {
   range: {
@@ -277,4 +284,4 @@ element.addEventListener('change', (evt) => {
     });
   }
 });
-// document.querySelectorAll('.effects__radio') это уже массив и его надо использовать в цикле
+//document.querySelectorAll('.effects__radio'); //это уже массив и его надо использовать в цикле
