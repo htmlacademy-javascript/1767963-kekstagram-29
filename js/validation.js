@@ -57,6 +57,9 @@ const imgUploadInput = document.querySelector('.img-upload__input');//кнопк
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');//попап с настройками фото после выьра фото
 const imgUploadBody = document.querySelector('body');//ищем боди
 const imgUploadСancel = document.querySelector('.img-upload__cancel'); //кнопка закрытия
+const formElement = document.querySelector('.img-upload__form');
+const imgHashtags = document.querySelector('.text__hashtags');
+const imgPreview = document.querySelector('.img-upload__preview');
 
 function isEscapeKey(evt) {
   return evt.key === 'ESC' || evt.key === 'Escape';
@@ -91,60 +94,73 @@ imgUploadСancel.addEventListener('click', () => {
 // не обязателен;
 // не  больше 140 символов;
 // если фокус находится в поле ввода комментария, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
-const imgComment = document.querySelector('.img-upload__form');
+// const imgComment = document.querySelector('.img-upload__form');
 
-const pristine = new Pristine(imgComment, {
-  classTo: 'img-upload__field-wrapper',
-  errorTextParent: 'img-upload__field-wrapper',
-  errorTextClass: 'img-description__error-text',
+const pristine = new Pristine(formElement, {
+  classTo: 'img-upload__text',
+  errorClass: 'img-upload__text--invalid',
+  successClass: 'img-upload__text--valid',
+  errorTextParent: 'img-upload__text',
+  errorTextTag: 'p',
+  errorTextClass: 'img-upload-error'
 });
 
-imgComment.addEventListener('submit', (evt) => {
+
+formElement.addEventListener('submit', (evt) => {
   evt.preventDefault();
-
   const isValid = pristine.validate();
-  if (isValid) {
-    console.log('Можно отправлять');
-  } else {
-    console.log('Форма невалидна');
-  }
+  console.log('form is valid:', isValid);
 });
 
-// Хэш-теги:
+pristine.addValidator(imgHashtags, () => {
+  const hashtags = imgHashtags.value.split(' ');
 
-// хэш-теги разделяются пробелами;
-// один и тот же хэш-тег не может быть использован дважды; не повторять элементы массива сравнить друг с другом
-// количество элементов массива не больше 5
-// хэш-теги необязательны;
-// если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
-const imgHashtags = document.querySelector('.text__hashtags');
+  return hashtags.length <= 5; // вынести в константу
+}, 'Количество элементов массива не больше 5');
 
+pristine.addValidator(imgHashtags, () => {
+  const hashtags = imgHashtags.value.split(' ');
 
-const createArrayHashtags = imgHashtags.value.split(' ');
-const arrayHashtagsLength = createArrayHashtags.length;
-const comparisonArrayLength = function (){
-  if (arrayHashtagsLength <= 5) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-let valid = true;
-for (let i = 0; i < createArrayHashtags.length; i++) {
-  for (let j = i + 1; j < createArrayHashtags.length; j++) {
-    if (createArrayHashtags[i] === createArrayHashtags[j]) {
-      valid = false;
-      break;
+  for (let i = 0; i < hashtags.length; i++) {
+    for (let j = i + 1; j < hashtags.length; j++) {
+      if (hashtags[i] === hashtags[j]) {
+        return false;
+      }
     }
   }
-  if (!valid) {
-    break;
-  }
-}
 
-const regHashtag = /^#[a-zа-яё0-9]{1,19}$/i;
-console.log(regHashtag.test('#ffffvv')); //pattern ??  pattern="/^#[a-zа-яё0-9]{1,19}$/i"
+  return true;
+}, 'один и тот же хэш-тег не может быть использован дважды');
+
+pristine.addValidator(imgHashtags, () => {
+  const hashtags = imgHashtags.value.split(' ');
+  for (let i = 0; i < hashtags.length; i++) {
+    if (hashtags[i].length > 20) {
+      return false;
+    }
+  }
+
+  return true;
+}, 'Хэш-тэг не может быть длиннее 20 символов');
+
+const regHashtag = /^#[a-zа-яё0-9]{1,20}$/i;
+
+pristine.addValidator(imgHashtags, () => {
+  const hashtags = imgHashtags.value.split(' ');
+
+  for (let i = 0; i < hashtags.length; i++) {
+    if (!regHashtag.test(hashtags[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}, 'Хэш-тэг может состоять только из букв и цифр и должен начинаться с #');
+
+// document.activeElement
+
+
+// $0.style = 'transform: scale(0.75)';
 
 //Масштаб:
 // При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value;
@@ -159,12 +175,19 @@ const controlSmall = document.querySelector('.scale__control--smaller');
 const controlBig = document.querySelector('.scale__control--bigger');
 const controlValue = document.querySelector('.scale__control--value');
 
-//controlValue.value = 100;
+
+function getControlValueAsNumber() {
+  return Number.parseInt(controlValue.value.replace('%', ''), 10);
+}
 controlSmall.addEventListener('click', () => {
-  controlValue.value - 25;
+  const nextValue = Math.max(getControlValueAsNumber() - 25, 25);
+  controlValue.value = `${nextValue}%`;
+  imgPreview.style = `transform: scale(${nextValue / 100})`;
 });
 controlBig.addEventListener('click', () => {
-  controlValue.value += 25;
+  const nextValue = Math.min(getControlValueAsNumber() + 25, 100);
+  controlValue.value = `${nextValue}%`;
+  imgPreview.style = `transform: scale(${nextValue / 100})`;
 });
 
 // Наложение эффекта на изображение:
@@ -186,13 +209,14 @@ controlBig.addEventListener('click', () => {
 // При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%):
 //слайдер, CSS-стиль изображения и значение поля должны обновляться.
 const effectElement = document.querySelector('.effect-level__value');
-const chromeElement = document.querySelector('.effects__preview--chrome');
-const sepiaElement = document.querySelector('.effects__preview--sepia');
-const marvinElement = document.querySelector('.effects__preview--marvin');
-const phobosElement = document.querySelector('.effects__preview--phobos');
-const heatElement = document.querySelector('.effects__preview--heat');
-const originalElement = document.querySelector('.effects__preview--none');
-controlValue.value = 0;
+// const chromeElement = document.querySelector('.effects__preview--chrome');
+// const sepiaElement = document.querySelector('.effects__preview--sepia');
+// const marvinElement = document.querySelector('.effects__preview--marvin');
+// const phobosElement = document.querySelector('.effects__preview--phobos');
+// const heatElement = document.querySelector('.effects__preview--heat');
+//const originalElement = document.querySelector('.effects__preview--none');
+//controlValue.value = 0;
+const filterArray = document.querySelectorAll('.effects__radio');
 
 noUiSlider.create(effectElement, {
   range: {
@@ -207,54 +231,50 @@ effectElement.noUiSlider.on('update', () => {
   controlValue.value = effectElement.noUiSlider.get();
 });
 
-
-chromeElement.addEventListener('click', () => {
-  effectElement.noUiSlider.updateOptions({
-    range: {
-      min: 0,
-      max: 1,
-    },
-    step: 0.1,
-  });
+element.addEventListener('change', (evt) => {
+  if (evt.target.value === 'none') {
+    effectElement.setAttribute('disabled', true);//effectElement.noUiSlider.destroy();
+  } else if (evt.target.value === 'chrome') {
+    effectElement.noUiSlider.updateOptions({
+      range: {
+        min: 0,
+        max: 1,
+      },
+      step: 0.1,
+    });
+  } else if (evt.target.value === 'sepia') {
+    effectElement.noUiSlider.updateOptions({
+      range: {
+        min: 0,
+        max: 1,
+      },
+      step: 0.1,
+    });
+  } else if (evt.target.value === 'marvin') {
+    effectElement.noUiSlider.updateOptions({
+      range: {
+        min: 0,
+        max: 100,
+      },
+      step: 1,
+    });
+  }else if (evt.target.value === 'phobos') {
+    effectElement.noUiSlider.updateOptions({
+      range: {
+        min: 0,
+        max: 3,
+      },
+      step: 0.1,//px
+    });
+  }else if (evt.target.value === 'heat') {
+    effectElement.noUiSlider.updateOptions({
+      range: {
+        min: 1,
+        max: 3,
+      },
+      step: 0.1,//px
+      start: 1,
+    });
+  }
 });
-
-sepiaElement.addEventListener('click', () => {
-  effectElement.noUiSlider.updateOptions({
-    range: {
-      min: 0,
-      max: 1,
-    },
-    step: 0.1,
-  });
-});
-
-marvinElement.addEventListener('click', () => {
-  effectElement.noUiSlider.updateOptions({
-    range: {
-      min: 0,
-      max: 100%,
-    },
-    step: 1%,
-  });
-});
-phobosElement.addEventListener('click', () => {
-  effectElement.noUiSlider.updateOptions({
-    range: {
-      min: 0,
-      max: 3,
-    },
-    step: 0.1,//px
-  });
-});
-heatElement.addEventListener('click', () => {
-  effectElement.noUiSlider.updateOptions({
-    range: {
-      min: 1,
-      max: 3,
-    },
-    step: 0.1,//px
-  });
-});
-originalElement.addEventListener('click', () => {
-  effectElement.classList.add('.hidden');
-});
+// document.querySelectorAll('.effects__radio') это уже массив и его надо использовать в цикле
