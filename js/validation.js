@@ -159,10 +159,102 @@ const controlSmall = document.querySelector('.scale__control--smaller');
 const controlBig = document.querySelector('.scale__control--bigger');
 const controlValue = document.querySelector('.scale__control--value');
 
-controlValue.value = 100;
+//controlValue.value = 100;
 controlSmall.addEventListener('click', () => {
   controlValue.value - 25;
 });
 controlBig.addEventListener('click', () => {
   controlValue.value += 25;
+});
+
+// Наложение эффекта на изображение:
+
+// По умолчанию должен быть выбран эффект «Оригинал».
+// На изображение может накладываться только один эффект.
+// Интенсивность эффекта регулируется перемещением ползунка в слайдере.
+// Слайдер реализуется сторонней библиотекой для реализации слайдеров noUiSlider.
+// Уровень эффекта записывается в поле .effect-level__value.
+// При изменении уровня интенсивности эффекта (предоставляется API слайдера),
+// CSS-стили картинки внутри .img-upload__preview обновляются следующим образом:
+// Для эффекта «Хром» — filter: grayscale(0..1) с шагом 0.1;
+// Для эффекта «Сепия» — filter: sepia(0..1) с шагом 0.1;
+// Для эффекта «Марвин» — filter: invert(0..100%) с шагом 1%;
+// Для эффекта «Фобос» — filter: blur(0..3px) с шагом 0.1px;
+// Для эффекта «Зной» — filter: brightness(1..3) с шагом 0.1;
+// Для эффекта «Оригинал» CSS-стили filter удаляются.
+// При выборе эффекта «Оригинал» слайдер и его контейнер (элемент .img-upload__effect-level) скрываются.
+// При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%):
+//слайдер, CSS-стиль изображения и значение поля должны обновляться.
+const effectElement = document.querySelector('.effect-level__value');
+const chromeElement = document.querySelector('.effects__preview--chrome');
+const sepiaElement = document.querySelector('.effects__preview--sepia');
+const marvinElement = document.querySelector('.effects__preview--marvin');
+const phobosElement = document.querySelector('.effects__preview--phobos');
+const heatElement = document.querySelector('.effects__preview--heat');
+const originalElement = document.querySelector('.effects__preview--none');
+controlValue.value = 0;
+
+noUiSlider.create(effectElement, {
+  range: {
+    min: 0,
+    max: 100,
+  },
+  start: 0,
+  step: 25,
+  connect: 'lower',
+});
+effectElement.noUiSlider.on('update', () => {
+  controlValue.value = effectElement.noUiSlider.get();
+});
+
+
+chromeElement.addEventListener('click', () => {
+  effectElement.noUiSlider.updateOptions({
+    range: {
+      min: 0,
+      max: 1,
+    },
+    step: 0.1,
+  });
+});
+
+sepiaElement.addEventListener('click', () => {
+  effectElement.noUiSlider.updateOptions({
+    range: {
+      min: 0,
+      max: 1,
+    },
+    step: 0.1,
+  });
+});
+
+marvinElement.addEventListener('click', () => {
+  effectElement.noUiSlider.updateOptions({
+    range: {
+      min: 0,
+      max: 100%,
+    },
+    step: 1%,
+  });
+});
+phobosElement.addEventListener('click', () => {
+  effectElement.noUiSlider.updateOptions({
+    range: {
+      min: 0,
+      max: 3,
+    },
+    step: 0.1,//px
+  });
+});
+heatElement.addEventListener('click', () => {
+  effectElement.noUiSlider.updateOptions({
+    range: {
+      min: 1,
+      max: 3,
+    },
+    step: 0.1,//px
+  });
+});
+originalElement.addEventListener('click', () => {
+  effectElement.classList.add('.hidden');
 });
