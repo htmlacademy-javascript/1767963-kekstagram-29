@@ -1,3 +1,4 @@
+import {isEscapeKey} from './util.js';
 // Добавить в проект валидацию, проверки введённых данных
 // Заведите модуль, который будет отвечать за работу с формой.
 
@@ -34,24 +35,6 @@
 // Напишите код для валидации формы добавления изображения, используя библиотеку Pristine
 // (скрипт находится в директории /vendor/pristine). Список полей для валидации:
 
-// Хэш-теги
-// Комментарий
-// Реализуйте логику проверки так, чтобы, как минимум,
-// она срабатывала при попытке отправить форму и не давала этого сделать,
-// если форма заполнена не по правилам. При желании, реализуйте проверки сразу при вводе значения в поле.
-
-// Как отменить обработчик Esc при фокусе?
-// Задача не имеет одного верного решения,
-// однако намекнём на самый простой — использовать stopPropagation для события нажатия клавиш в поле при фокусе.
-
-// Валидация хеш-тегов?
-// Для валидации хэш-тегов вам придётся вспомнить, как работать с массивами.
-//  Набор хэш-тегов можно превратить в массив, воспользовавшись методом .split().
-//  Он разбивает строки на массивы. После этого, вы можете написать цикл,
-//  который будет ходить по полученному массиву и проверять каждый из хэш-тегов на предмет соответствия ограничениям.
-//  Если хотя бы один из тегов не проходит нужных проверок, показывать сообщение об ошибке.
-
-// Поля, не перечисленные в техзадании, но существующие в разметке, особой валидации не требуют.
 
 const imgUploadInput = document.querySelector('.img-upload__input');//кнопка для лисенира
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');//попап с настройками фото после выьра фото
@@ -60,10 +43,7 @@ const imgUploadСancel = document.querySelector('.img-upload__cancel'); //кно
 const formElement = document.querySelector('.img-upload__form');
 const imgHashtags = document.querySelector('.text__hashtags');
 const imgPreview = document.querySelector('.img-upload__preview');
-
-function isEscapeKey(evt) {
-  return evt.key === 'ESC' || evt.key === 'Escape';
-}
+const commentElement = document.querySelector('.text__description');
 
 function openDownloadForm () {
   imgUploadBody.classList.add('modal-open');//добавляем класс у боди
@@ -77,15 +57,17 @@ imgUploadInput.addEventListener('change', () => {
 function closeDownloadForm () {//при закрытии нужно сбрасывать значения всех полей
   imgUploadBody.classList.remove('modal-open');//убираем класс у боди
   imgUploadOverlay.classList.add('hidden');//скрываем попап
-
-  document.addEventListener('keydown', (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      imgUploadBody.classList.remove('modal-open');
-      imgUploadOverlay.classList.add('hidden');//так закрывать по ESC?
-    }
-  });
 }
+
+document.addEventListener('keydown', (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    if (document.activeElement === imgHashtags || document.activeElement === commentElement) {
+      return;
+    }
+    closeDownloadForm();
+  }
+});
 
 imgUploadСancel.addEventListener('click', () => {
   closeDownloadForm();
@@ -157,20 +139,6 @@ pristine.addValidator(imgHashtags, () => {
   return true;
 }, 'Хэш-тэг может состоять только из букв и цифр и должен начинаться с #');
 
-// document.activeElement
-
-
-// $0.style = 'transform: scale(0.75)';
-
-//Масштаб:
-// При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value;
-// Значение должно изменяться с шагом в 25.
-//Например, если значение поля установлено в 50%, после нажатия на «+», значение должно стать равным 75%. Максимальное значение — 100%, минимальное — 25%.
-//Значение по умолчанию — 100%;
-// При изменении значения поля .scale__control--value
-//изображению внутри .img-upload__preview должен добавляться соответствующий стиль CSS,
-//который с помощью трансформации scale задаёт масштаб. Например, если в поле стоит значение 75%,
-//то в стиле изображения должно быть написано transform: scale(0.75).
 const controlSmall = document.querySelector('.scale__control--smaller');
 const controlBig = document.querySelector('.scale__control--bigger');
 const controlValue = document.querySelector('.scale__control--value');
@@ -182,12 +150,12 @@ function getControlValueAsNumber() {
 controlSmall.addEventListener('click', () => {
   const nextValue = Math.max(getControlValueAsNumber() - 25, 25);
   controlValue.value = `${nextValue}%`;
-  imgPreview.style = `transform: scale(${nextValue / 100})`;
+  imgPreview.style.transform = `scale(${nextValue / 100})`;
 });
 controlBig.addEventListener('click', () => {
   const nextValue = Math.min(getControlValueAsNumber() + 25, 100);
   controlValue.value = `${nextValue}%`;
-  imgPreview.style = `transform: scale(${nextValue / 100})`;
+  imgPreview.style.transform = `scale(${nextValue / 100})`;
 });
 
 // Наложение эффекта на изображение:
@@ -208,24 +176,76 @@ controlBig.addEventListener('click', () => {
 // При выборе эффекта «Оригинал» слайдер и его контейнер (элемент .img-upload__effect-level) скрываются.
 // При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%):
 //слайдер, CSS-стиль изображения и значение поля должны обновляться.
-const effectElement = document.querySelector('.effect-level__value');
-// const chromeElement = document.querySelector('.effects__preview--chrome');
-// const sepiaElement = document.querySelector('.effects__preview--sepia');
-// const marvinElement = document.querySelector('.effects__preview--marvin');
-// const phobosElement = document.querySelector('.effects__preview--phobos');
-// const heatElement = document.querySelector('.effects__preview--heat');
-//const originalElement = document.querySelector('.effects__preview--none');
-//controlValue.value = 0;
+const effectLevelElement = document.querySelector('.img-upload__effect-level');
+const sliderElement = document.querySelector('.effect-level__slider');
+const effectValueElement = document.querySelector('.effect-level__value');
+
 const filterArray = document.querySelectorAll('.effects__radio');
-let element;
+
+effectLevelElement.classList.add('hidden');
+
 for (let i = 0; i < filterArray.length; i++) {
-  if (filterArray[i].checked) {
-    element = filterArray[i];
-  }
+  filterArray[i].addEventListener('change', (evt) => {
+    console.log('change!', evt.target.value, evt.target);
+    if (evt.target.value === 'none') {
+      effectLevelElement.classList.add('hidden');
+      imgPreview.style.filter = null;
+      effectValueElement.value = '';
+    } else if (evt.target.value === 'chrome') {
+      effectLevelElement.classList.remove('hidden');
+      sliderElement.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 1,
+        },
+        start: 0,
+        step: 0.1,
+      });
+    } else if (evt.target.value === 'sepia') {
+      effectLevelElement.classList.remove('hidden');
+      sliderElement.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 1,
+        },
+        start: 0,
+        step: 0.1,
+      });
+    } else if (evt.target.value === 'marvin') {
+      effectLevelElement.classList.remove('hidden');
+      sliderElement.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 100,
+        },
+        start: 0,
+        step: 1,
+      });
+    }else if (evt.target.value === 'phobos') {
+      effectLevelElement.classList.remove('hidden');
+      sliderElement.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 3,
+        },
+        start: 0,
+        step: 0.1,//px
+      });
+    }else if (evt.target.value === 'heat') {
+      effectLevelElement.classList.remove('hidden');
+      sliderElement.noUiSlider.updateOptions({
+        range: {
+          min: 1,
+          max: 3,
+        },
+        step: 0.1,//px
+        start: 1,
+      });
+    }
+  });
 }
 
-
-noUiSlider.create(effectElement, {
+noUiSlider.create(sliderElement, {
   range: {
     min: 0,
     max: 100,
@@ -234,54 +254,23 @@ noUiSlider.create(effectElement, {
   step: 25,
   connect: 'lower',
 });
-effectElement.noUiSlider.on('update', () => {
-  controlValue.value = effectElement.noUiSlider.get();
-});
-
-element.addEventListener('change', (evt) => {
-  if (evt.target.value === 'none') {
-    effectElement.setAttribute('disabled', true);//effectElement.noUiSlider.destroy();
-  } else if (evt.target.value === 'chrome') {
-    effectElement.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 1,
-      },
-      step: 0.1,
-    });
-  } else if (evt.target.value === 'sepia') {
-    effectElement.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 1,
-      },
-      step: 0.1,
-    });
-  } else if (evt.target.value === 'marvin') {
-    effectElement.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 100,
-      },
-      step: 1,
-    });
-  }else if (evt.target.value === 'phobos') {
-    effectElement.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 3,
-      },
-      step: 0.1,//px
-    });
-  }else if (evt.target.value === 'heat') {
-    effectElement.noUiSlider.updateOptions({
-      range: {
-        min: 1,
-        max: 3,
-      },
-      step: 0.1,//px
-      start: 1,
-    });
+sliderElement.noUiSlider.on('update', () => {
+  const value = sliderElement.noUiSlider.get();
+  effectValueElement.value = value;
+  for(let i = 0; i < filterArray.length; i++) {
+    if (filterArray[i].checked) {
+      if (filterArray[i].value === 'chrome') {
+        imgPreview.style.filter = `grayscale(${value})`;
+      } else if (filterArray[i].value === 'sepia') {
+        imgPreview.style.filter = `sepia(${value})`;
+      } else if (filterArray[i].value === 'marvin') {
+        imgPreview.style.filter = `invert(${value})`;
+      } else if (filterArray[i].value === 'phobos') {
+        imgPreview.style.filter = `blur(${value})`;
+      } else if (filterArray[i].value === 'heat') {
+        imgPreview.style.filter = `brightness(${value})`;
+      }
+    }
   }
 });
-//document.querySelectorAll('.effects__radio'); //это уже массив и его надо использовать в цикле
+

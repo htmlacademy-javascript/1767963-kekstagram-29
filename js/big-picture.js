@@ -1,10 +1,6 @@
+import {isEscapeKey} from './util.js';
 //После открытия окна спрячьте блоки счётчика комментариев .social__comment-count и загрузки новых комментариев .comments-loader, добавив им класс hidden, с ними мы разберёмся позже, в другом домашнем задании.
 const userPictureElement = document.querySelector('.big-picture');
-
-
-function isEscapeKey(evt) {
-  return evt.key === 'ESC' || evt.key === 'Escape';
-}
 
 function openBigPicture ({url, description, likes, comments}) { //открывает модальное окно
 
