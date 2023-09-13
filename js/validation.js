@@ -264,9 +264,9 @@ sliderElement.noUiSlider.on('update', () => {
       } else if (filterArray[i].value === 'sepia') {
         imgPreview.style.filter = `sepia(${value})`;
       } else if (filterArray[i].value === 'marvin') {
-        imgPreview.style.filter = `invert(${value})`;
+        imgPreview.style.filter = `invert(${value}%)`;
       } else if (filterArray[i].value === 'phobos') {
-        imgPreview.style.filter = `blur(${value})`;
+        imgPreview.style.filter = `blur(${value}px)`;
       } else if (filterArray[i].value === 'heat') {
         imgPreview.style.filter = `brightness(${value})`;
       }
