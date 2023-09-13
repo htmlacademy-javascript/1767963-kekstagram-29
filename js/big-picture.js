@@ -1,11 +1,11 @@
 import {isEscapeKey} from './util.js';
-//После открытия окна спрячьте блоки счётчика комментариев .social__comment-count и загрузки новых комментариев .comments-loader, добавив им класс hidden, с ними мы разберёмся позже, в другом домашнем задании.
+
 const userPictureElement = document.querySelector('.big-picture');
 
 function openBigPicture ({url, description, likes, comments}) { //открывает модальное окно
 
   const body = document.querySelector('body');
-  body.classList.add('modal-open');//так добавить для боди??
+  body.classList.add('modal-open');
   userPictureElement.classList.remove('hidden');
 
   document.addEventListener('keydown', (evt) => {
@@ -28,14 +28,13 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
   // Покажите блоки счётчика комментариев .social__comment-count
   const socialCommentCount = document.querySelector('.social__comment-count');
   socialCommentCount.classList.remove('hidden');
-  // и загрузки новых комментариев .comments-loader, убрав у них класс hidden.
   const commentLoader = document.querySelector('.comments-loader');
   commentLoader.classList.add('hidden');
   const shownCommentsElement = document.querySelector('.comments-count-shown');
 
 
   commentsContainerElement.innerHTML = '';
-  const firstComments = comments.slice(0, 5); // 5 вынести в константу
+  const firstComments = comments.slice(0, 5);
   firstComments.forEach(({name, avatar, message}) => {
     const element = сommentTemplate.cloneNode(true);
     element.querySelector('.social__picture').src = avatar; //передаем переменные из дата джс
@@ -47,7 +46,7 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
   shownCommentsElement.textContent = firstComments.length;
 
   if (comments.length > 5) {
-    const loadMoreButton = document.querySelector('.social__comments-loader');//нашла кнопку
+    const loadMoreButton = document.querySelector('.social__comments-loader');
     commentLoader.classList.remove('hidden');
 
 
@@ -59,7 +58,7 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
       const nextComments = comments.slice(lastIndex, lastIndex + 5);
       nextComments.forEach(({name, avatar, message}) => {
         const element = сommentTemplate.cloneNode(true);
-        element.querySelector('.social__picture').src = avatar; //передаем переменные из дата джс
+        element.querySelector('.social__picture').src = avatar;
         element.querySelector('.social__picture').alt = name;
         element.querySelector('.social__text').textContent = message;
         commentsContainerElement.appendChild(element);
@@ -81,7 +80,6 @@ function setupHandlers(pictures) {
     element.addEventListener('click', (evt) => {
       const targetElement = evt.target.tagName === 'A' ? evt.target : evt.target.parentElement;
 
-      console.log('id:', targetElement.dataset.id);
       const id = Number.parseInt(targetElement.dataset.id, 10);
       const picture = pictures.find((item) => item.id === id);
       console.log('selected:', picture);
@@ -94,7 +92,7 @@ const openCloseBigPicture = () => {
   const userPictureCloseElement = userPictureElement.querySelector('.big-picture__cancel');
 
   function closeBigPicture () {
-    const loadMoreButton = document.querySelector('.social__comments-loader');//нашла кнопку
+    const loadMoreButton = document.querySelector('.social__comments-loader');
     loadMoreButton.replaceWith(loadMoreButton.cloneNode(true));
     userPictureElement.classList.add('hidden');
     document.addEventListener('keydown', (evt) => {
