@@ -216,3 +216,4 @@ sliderElement.noUiSlider.on('update', () => {
     }
   }
 });
+// не забыть про вывоз сообщения
