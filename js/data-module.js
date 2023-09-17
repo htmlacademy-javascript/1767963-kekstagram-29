@@ -1,17 +1,21 @@
-import { renderPhotos } from'./picture.js';
-import { setupHandlers } from'./big-picture.js';
+// import { renderPhotos } from'./picture.js';
+// import { setupHandlers } from'./big-picture.js';
 // Создайте новый модуль и опишите в нём функции взаимодействия c удалённым сервером с помощью fetch
 //  для получения и отправки данных.
 // Подключите модуль в проект.
-fetch('https://29.javascript.pages.academy/kekstagram/data')
-  .then((response) => response.json())
-  .then((photos) => {
-    console.log(photos)
-  .then(onSuccess)
-  .catch((err) => {
-    console.error(err);
-      });
-  });
+
+// fetch('https://29.javascript.pages.academy/kekstagram/data')
+//   .then((response) => response.json())
+//   .then((photos) => {
+//     console.log(photos);
+//     renderPhotos(photos);
+//     setupHandlers(photos);
+//   })
+//   // .then(onSuccess)
+//   .catch((err) => {
+//     console.error(err);
+//   });
+
 
 // Получение данных
 // Доработайте модуль для отрисовки фотографий так, чтобы в качестве данных использовались не случайно сгенерированные объекты,
@@ -46,7 +50,8 @@ const setUserFormSubmit = (onSuccess) => {
         });
     }
   });
-};//тут гдето должна быть очистка formElement.reset()
+};
+//тут гдето должна быть очистка formElement.reset()
 
 // Реализуйте возвращение формы в исходное состояние при успешной отправке, а также показ сообщения пользователю.
 const successButton = document.querySelector('.success__button');//кнопка закрытия

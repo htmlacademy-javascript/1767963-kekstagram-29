@@ -5,11 +5,14 @@ import { openCloseBigPicture } from'./big-picture.js';
 import { setupHandlers } from'./big-picture.js';
 import './validation.js';
 import './data-module.js';
-import {getData, sendData}from'.api.js';
 
-const randomPhotoObjects = createPhotos();//генерирует обьекты с фотографиями
-console.log('pictures data', randomPhotoObjects);
-renderPhotos(randomPhotoObjects);//отрисовывает фото
+import { getData }from './api.js';
+
+
+getData();
+// const randomPhotoObjects = createPhotos();//генерирует обьекты с фотографиями
+// console.log('pictures data', randomPhotoObjects);
+// renderPhotos(randomPhotoObjects);//отрисовывает фото
 //тут должет быть вызов гет даты
 openCloseBigPicture();
-setupHandlers(randomPhotoObjects);
+// setupHandlers(randomPhotoObjects);
