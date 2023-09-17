@@ -38,4 +38,3 @@ const getData = () => fetch('https://29.javascript.pages.academy/kekstagram/data
   });
 
 export {getData};
-//похоже это тот блок который мы переносим из первого файла отдельно для загрузки и отправки данных. а где тогда сообщения клики и тд?

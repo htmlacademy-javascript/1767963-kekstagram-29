@@ -80,6 +80,31 @@ function showSuccessModal() {
   //   evt.stopPropagation();
   // });
 }
+function showErrorModal () {
+  isModalOpen = true;
+  const successTemplate = document.querySelector('#error').content;
+  document.body.appendChild(successTemplate.cloneNode(true));
+
+  const modalElement = document.querySelector('.error');
+
+  const successButton = document.querySelector('.error__button');//кнопка закрытия
+
+  const closeModal = () => {
+    isModalOpen = false;
+    modalElement.remove();
+  };
+
+  const handleEscKeydown = (evt) => {
+    if (isEscapeKey(evt)) {
+      closeModal();
+      document.removeEventListener('keydown', handleEscKeydown);
+    }
+  };
+
+  successButton.addEventListener('click', closeModal);
+  modalElement.addEventListener('click', closeModal);
+  document.addEventListener('keydown', handleEscKeydown);
+}
 
 function resetForm() {
   formElement.reset();
@@ -109,9 +134,9 @@ formElement.addEventListener('submit', (evt) => {
         showSuccessModal();
       })
       .catch((err) => {
-        // showErrorModal();
+        showErrorModal();
         console.log(err);
-        throw new Error('Не удалось отправить форму. Попробуйте ещё раз');
+        //throw new Error('Не удалось отправить форму. Попробуйте ещё раз');
       });
   }
 
