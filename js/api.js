@@ -31,7 +31,7 @@ const getData = () => fetch('https://29.javascript.pages.academy/kekstagram/data
     renderPhotos(photos);
     setupHandlers(photos);
   })
-  // .then(onSuccess)
+
   .catch((err) => {
     console.error(err);
     showAlert(err.message);

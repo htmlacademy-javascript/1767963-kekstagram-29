@@ -136,7 +136,6 @@ formElement.addEventListener('submit', (evt) => {
       .catch((err) => {
         showErrorModal();
         console.log(err);
-        //throw new Error('Не удалось отправить форму. Попробуйте ещё раз');
       });
   }
 

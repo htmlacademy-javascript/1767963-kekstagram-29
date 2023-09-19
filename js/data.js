@@ -17,13 +17,6 @@ const DESCRIPTION = ['развитие ценностей.', 'значение �
 
 const RANDOM_PHOTO_OBJECT_COUNT = 25;
 
-/*  const getRandomInteger = (a, b) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-}; */
-
 const generateRandomMessage = () => {
   const messageCount = getRandomInteger(1,2);
   let message = '';
@@ -38,13 +31,12 @@ const generateRandomMessage = () => {
 
 const commentsObject = (value, index) => {
   const randomIndexAvatar = getRandomInteger(1, 6);
-  /*const randomMessageIndex = getRandomInteger(0, MESSAGE.length - 1);*/
   const randomNameIndex = getRandomInteger(0, NAMES.length - 1);
 
   return {
     id: index + 1,
-    avatar: `img/avatar-${(randomIndexAvatar)}.svg`, /*'img/avatar-' + randomIndexAvatar + '.svg',*/
-    message: generateRandomMessage()/*MESSAGE[randomMessageIndex]*/,
+    avatar: `img/avatar-${(randomIndexAvatar)}.svg`,
+    message: generateRandomMessage(),
     name: NAMES[randomNameIndex],
   };
 };
@@ -64,7 +56,7 @@ const photoObject = (value, index) => {
     description: DESCRIPTION[randomDescriptionIndex],
     likes: randomLikes,
     comments: randomComments,
-    avatar: `img/avatar-${(randomIndexAvatar)}.svg`, /*'img/avatar-' + randomIndexAvatar + '.svg',*/
+    avatar: `img/avatar-${(randomIndexAvatar)}.svg`,
     message: MESSAGE[randomMessageIndex],
     name: NAMES[randomNameIndex],
   };
@@ -73,8 +65,3 @@ const photoObject = (value, index) => {
 const createPhotos = () => Array.from({length: RANDOM_PHOTO_OBJECT_COUNT}, photoObject);
 
 export { createPhotos };
-// const randomPhotoObject = Array.from({length: RANDOM_PHOTO_OBJECT_COUNT}, photoObject);
-
-// console.log(
-//   randomPhotoObject
-// );
