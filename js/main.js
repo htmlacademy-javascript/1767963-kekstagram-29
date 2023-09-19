@@ -4,7 +4,7 @@ import './functions.js';
 import { openCloseBigPicture } from'./big-picture.js';
 //import { setupHandlers } from'./big-picture.js';
 import './validation.js';
-//import './data-module.js';
+import './upload-photo.js';
 
 import { getData }from './api.js';
 
