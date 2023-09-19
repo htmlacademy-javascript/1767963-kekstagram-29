@@ -1,5 +1,6 @@
 import { renderPhotos } from'./picture.js';
 import { setupHandlers } from'./big-picture.js';
+import { showFilter } from'./picture.js';
 
 const ALERT_SHOW_TIME = 5000;
 
@@ -30,6 +31,7 @@ const getData = () => fetch('https://29.javascript.pages.academy/kekstagram/data
     console.log(photos);
     renderPhotos(photos);
     setupHandlers(photos);
+    showFilter(photos);
   })
 
   .catch((err) => {

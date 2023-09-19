@@ -1,11 +1,11 @@
-import {compareNumeric} from './util.js';
+import {compareNumeric, debounce, shuffle} from './util.js';
 const photosListElement = document.querySelector('.pictures'); //нашли большую секцию
 const PhotoTemplate = document.querySelector('#picture').content.querySelector('.picture'); //нашти темплейт и внутри темплейта
 
 const renderPhotos = (photos) => {
   const photosListFragment = document.createDocumentFragment();
 
-  photos.slice().forEach(({url, description, likes, comments, id}) => {//копия массива фоток? нужна?
+  photos.forEach(({url, description, likes, comments, id}) => {//копия массива фоток? нужна?
     const photoElement = PhotoTemplate.cloneNode(true);
 
     photoElement.querySelector('.picture__img').src = url; //передаем переменные из дата джс
@@ -20,7 +20,42 @@ const renderPhotos = (photos) => {
   photosListElement.appendChild(photosListFragment);
 };
 
-export { renderPhotos };
+const imgFilterSection = document.querySelector('.img-filters');
+const imgFilteFormElement = document.querySelector('.img-filters__form');
+
+function showFilter(photos) {
+  imgFilterSection.classList.remove('img-filters--inactive');
+  const filterClickHandler = (evt) => {
+    const buttons = imgFilteFormElement.children;
+
+    for(let i = 0; i < buttons.length; i++) {
+      buttons[i].classList.remove('img-filters__button--active');
+    }
+    const activeButton = imgFilteFormElement.querySelector(`#${evt.target.id}`);
+    activeButton.classList.add('img-filters__button--active');
+    const originalPhotos = photos.slice();
+
+    const previewElements = document.querySelectorAll('.pictures .picture');
+
+    console.log('previewElements:', previewElements);
+    Array.from(previewElements).forEach((element) => {
+      element.remove();
+    });
+
+    if (evt.target.id === 'filter-default') {
+      renderPhotos(originalPhotos);
+    } else if (evt.target.id === 'filter-discussed') {
+      renderPhotos(photos.sort(compareNumeric));
+    } else if (evt.target.id === 'filter-random') {
+      renderPhotos(shuffle(photos).slice(0, 10));
+    }
+
+  };
+  const debouncedFilterClickHandler = debounce(filterClickHandler, 500);
+
+  imgFilteFormElement.addEventListener('click', debouncedFilterClickHandler);
+}
+export { renderPhotos, showFilter };
 
 // 12.12 После завершения загрузки изображений с сервера покажите блок .img-filters, убрав у него скрывающий класс.
 
@@ -34,11 +69,6 @@ export { renderPhotos };
 // Воспользуйтесь приёмом «устранение дребезга»,
 // чтобы при переключении фильтра обновление списка элементов, подходящих под фильтры, происходило не чаще, чем один раз в полсекунды.
 
-
-const imgFilterSection = document.querySelector('.img-filters');
-function showFilter() {
-  imgFilterSection.classList.remove('img-filters--inactive');//удаляем скоывающий класс?
-}
 const imgFilters = (renderPhotos) => {
   const defaultButton = document.getElementById('filter-default');
   const randomButton = document.getElementById('filter-random');

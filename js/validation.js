@@ -60,14 +60,20 @@ function showSuccessModal() {
 
   const successButton = document.querySelector('.success__button');//кнопка закрытия
 
-  const closeModal = () => {
+  const closeModal = (evt) => {
+    const innerElement = document.querySelector('.success__inner');
+
+    if (evt.type !== 'keydown' && evt.target !== successButton && innerElement.contains(evt.target)) {
+      return;
+    }
+
     isModalOpen = false;
     modalElement.remove();
   };
 
   const handleEscKeydown = (evt) => {
     if (isEscapeKey(evt)) {
-      closeModal();
+      closeModal(evt);
       document.removeEventListener('keydown', handleEscKeydown);
     }
   };
@@ -75,11 +81,8 @@ function showSuccessModal() {
   successButton.addEventListener('click', closeModal);
   modalElement.addEventListener('click', closeModal);
   document.addEventListener('keydown', handleEscKeydown);
-  // const modalContentElement = document.querySelector('success__inner');
-  // modalContentElement.addEventListener('click', (evt) => {
-  //   evt.stopPropagation();
-  // });
 }
+
 function showErrorModal () {
   isModalOpen = true;
   const successTemplate = document.querySelector('#error').content;
@@ -132,11 +135,14 @@ formElement.addEventListener('submit', (evt) => {
         }
         resetForm();
         showSuccessModal();
+        closeDownloadForm();
       })
       .catch((err) => {
         showErrorModal();
         console.log(err);
       });
+  } else {
+    console.log('prisine:', pristine.getErrors());
   }
 
 });
