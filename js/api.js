@@ -28,14 +28,12 @@ const showAlert = (message) => {
 const getData = () => fetch('https://29.javascript.pages.academy/kekstagram/data')
   .then((response) => response.json())
   .then((photos) => {
-    console.log(photos);
     renderPhotos(photos);
     setupHandlers(photos);
     showFilter(photos);
   })
 
   .catch((err) => {
-    console.error(err);
     showAlert(err.message);
   });
 

@@ -1,9 +1,9 @@
 import {isEscapeKey} from './util.js';
 
-const imgUploadInput = document.querySelector('.img-upload__input');//кнопка для лисенира
+const imgUploadInput = document.querySelector('.img-upload__input');
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');
 const imgUploadBody = document.querySelector('body');
-const imgUploadСancel = document.querySelector('.img-upload__cancel'); //кнопка закрытия
+const imgUploadСancel = document.querySelector('.img-upload__cancel');
 const formElement = document.querySelector('.img-upload__form');
 const imgHashtags = document.querySelector('.text__hashtags');
 const imgPreview = document.querySelector('.img-upload__preview');
@@ -11,8 +11,10 @@ const commentElement = document.querySelector('.text__description');
 const effectLevelElement = document.querySelector('.img-upload__effect-level');
 const sliderElement = document.querySelector('.effect-level__slider');
 const effectValueElement = document.querySelector('.effect-level__value');
-
 const filterArray = document.querySelectorAll('.effects__radio');
+const controlSmall = document.querySelector('.scale__control--smaller');
+const controlBig = document.querySelector('.scale__control--bigger');
+const controlValue = document.querySelector('.scale__control--value');
 let isModalOpen = false;
 
 function openDownloadForm () {
@@ -55,10 +57,8 @@ function showSuccessModal() {
   isModalOpen = true;
   const successTemplate = document.querySelector('#success').content;
   document.body.appendChild(successTemplate.cloneNode(true));
-
   const modalElement = document.querySelector('.success');
-
-  const successButton = document.querySelector('.success__button');//кнопка закрытия
+  const successButton = document.querySelector('.success__button');
 
   const closeModal = (evt) => {
     const innerElement = document.querySelector('.success__inner');
@@ -90,7 +90,7 @@ function showErrorModal () {
 
   const modalElement = document.querySelector('.error');
 
-  const successButton = document.querySelector('.error__button');//кнопка закрытия
+  const successButton = document.querySelector('.error__button');
 
   const closeModal = () => {
     isModalOpen = false;
@@ -119,7 +119,6 @@ function resetForm() {
 formElement.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
-  console.log('form is valid:', isValid);
 
   if (isValid) {
     const formData = new FormData(evt.target);
@@ -137,12 +136,9 @@ formElement.addEventListener('submit', (evt) => {
         showSuccessModal();
         closeDownloadForm();
       })
-      .catch((err) => {
+      .catch(() => {
         showErrorModal();
-        console.log(err);
       });
-  } else {
-    console.log('prisine:', pristine.getErrors());
   }
 
 });
@@ -206,11 +202,6 @@ pristine.addValidator(imgHashtags, () => {
 }, 'Хэш-тэг может состоять только из букв и цифр и должен начинаться с #');
 
 //масштаб
-const controlSmall = document.querySelector('.scale__control--smaller');
-const controlBig = document.querySelector('.scale__control--bigger');
-const controlValue = document.querySelector('.scale__control--value');
-
-
 function getControlValueAsNumber() {
   return Number.parseInt(controlValue.value.replace('%', ''), 10);
 }
@@ -226,7 +217,6 @@ controlBig.addEventListener('click', () => {
 });
 
 //эффекты
-
 effectLevelElement.classList.add('hidden');
 
 for (let i = 0; i < filterArray.length; i++) {
@@ -317,4 +307,3 @@ sliderElement.noUiSlider.on('update', () => {
     }
   }
 });
-// не забыть про вывоз сообщения

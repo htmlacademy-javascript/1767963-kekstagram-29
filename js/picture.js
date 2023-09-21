@@ -1,27 +1,27 @@
 import {compareNumeric, debounce, shuffle} from './util.js';
-const photosListElement = document.querySelector('.pictures'); //нашли большую секцию
-const PhotoTemplate = document.querySelector('#picture').content.querySelector('.picture'); //нашти темплейт и внутри темплейта
+
+const photosListElement = document.querySelector('.pictures');
+const PhotoTemplate = document.querySelector('#picture').content.querySelector('.picture');
+const TIMEOUT_DELAY = 500;
+const imgFilterSection = document.querySelector('.img-filters');
+const imgFilteFormElement = document.querySelector('.img-filters__form');
 
 const renderPhotos = (photos) => {
   const photosListFragment = document.createDocumentFragment();
 
-  photos.forEach(({url, description, likes, comments, id}) => {//копия массива фоток? нужна?
+  photos.forEach(({url, description, likes, comments, id}) => {
     const photoElement = PhotoTemplate.cloneNode(true);
 
-    photoElement.querySelector('.picture__img').src = url; //передаем переменные из дата джс
+    photoElement.querySelector('.picture__img').src = url;
     photoElement.querySelector('.picture__img').alt = description;
     photoElement.querySelector('.picture__likes').textContent = likes;
     photoElement.querySelector('.picture__comments').textContent = comments.length;
     photoElement.dataset.id = id;
-    photosListElement.appendChild(photoElement); //клонируем элемент и размножаем
+    photosListElement.appendChild(photoElement);
   });
-
 
   photosListElement.appendChild(photosListFragment);
 };
-
-const imgFilterSection = document.querySelector('.img-filters');
-const imgFilteFormElement = document.querySelector('.img-filters__form');
 
 function showFilter(photos) {
   imgFilterSection.classList.remove('img-filters--inactive');
@@ -37,7 +37,6 @@ function showFilter(photos) {
 
     const previewElements = document.querySelectorAll('.pictures .picture');
 
-    console.log('previewElements:', previewElements);
     Array.from(previewElements).forEach((element) => {
       element.remove();
     });
@@ -51,26 +50,9 @@ function showFilter(photos) {
     }
 
   };
-  const debouncedFilterClickHandler = debounce(filterClickHandler, 500);
+  const debouncedFilterClickHandler = debounce(filterClickHandler, TIMEOUT_DELAY);
 
   imgFilteFormElement.addEventListener('click', debouncedFilterClickHandler);
 }
+
 export { renderPhotos, showFilter };
-
-const imgFilters = (renderPhotos) => {
-  const defaultButton = document.getElementById('filter-default');
-  const randomButton = document.getElementById('filter-random');
-  const discussedButton = document.getElementById('filter-discussed');
-  const comment = document.querySelectorAll('.picture__comments');
-
-    const commentNumbers = () => Array.from({length: 25}, comment);
-  if (randomButton.addEventListener('click')){
-    commentNumbers.slice(0, 9);
-  }
-  if (discussedButton.addEventListener('click')){
-    commentNumbers.sort(compareNumeric);
-  }
-  if (defaultButton.addEventListener('click')){
-  }
-
-};

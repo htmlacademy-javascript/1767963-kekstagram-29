@@ -15,17 +15,14 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
     }
   });
 
-  console.log(userPictureElement.querySelector('.big-picture__img'));
   userPictureElement.querySelector('.big-picture__img img').src = url;
   userPictureElement.querySelector('.big-picture__img img').alt = description;
   userPictureElement.querySelector('.social__caption').textContent = description;
   userPictureElement.querySelector('.likes-count').textContent = likes;
   userPictureElement.querySelector('.comments-count').textContent = comments.length;
   const commentsContainerElement = userPictureElement.querySelector('.social__comments');
-
   const сommentTemplate = document.querySelector('#comment').content;
 
-  // Покажите блоки счётчика комментариев .social__comment-count
   const socialCommentCount = document.querySelector('.social__comment-count');
   socialCommentCount.classList.remove('hidden');
   const commentLoader = document.querySelector('.comments-loader');
@@ -37,7 +34,7 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
   const firstComments = comments.slice(0, 5);
   firstComments.forEach(({name, avatar, message}) => {
     const element = сommentTemplate.cloneNode(true);
-    element.querySelector('.social__picture').src = avatar; //передаем переменные из дата джс
+    element.querySelector('.social__picture').src = avatar;
     element.querySelector('.social__picture').alt = name;
     element.querySelector('.social__text').textContent = message;
     commentsContainerElement.appendChild(element);
@@ -51,10 +48,8 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
 
 
     let lastIndex = firstComments.length - 1;
-    console.log('lastIndex initial:', lastIndex);
 
     const handleLoadMoreButtonClick = () => {
-      //то что происхлдит при клике на кнопку
       const nextComments = comments.slice(lastIndex, lastIndex + 5);
       nextComments.forEach(({name, avatar, message}) => {
         const element = сommentTemplate.cloneNode(true);
@@ -65,7 +60,6 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
       });
 
       lastIndex = lastIndex + 5 >= comments.length ? comments.length - 1 : lastIndex + 5;
-      console.log('lastIndex:', lastIndex, 'comments.length:', comments.length);
       shownCommentsElement.textContent = lastIndex + 1;
       if (lastIndex + 1 >= comments.length) {
         commentLoader.classList.add('hidden');
@@ -82,7 +76,6 @@ function setupHandlers(pictures) {
 
       const id = Number.parseInt(targetElement.dataset.id, 10);
       const picture = pictures.find((item) => item.id === id);
-      console.log('selected:', picture);
       openBigPicture(picture);
     });
   });
