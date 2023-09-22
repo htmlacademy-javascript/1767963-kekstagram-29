@@ -1,19 +1,34 @@
 import {isEscapeKey} from './util.js';
 
 const userPictureElement = document.querySelector('.big-picture');
+const userPictureCloseElement = userPictureElement.querySelector('.big-picture__cancel');
+const COMMENTS_STEP = 5;
+const COUNTING_BASE = 10;
 
-function openBigPicture ({url, description, likes, comments}) { //открывает модальное окно
+function openBigPicture ({url, description, likes, comments}) {
 
   const body = document.querySelector('body');
   body.classList.add('modal-open');
   userPictureElement.classList.remove('hidden');
 
-  document.addEventListener('keydown', (evt) => {
+  function handleEscKeydown(evt) {
     if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      userPictureElement.classList.add('hidden');
+      closeBigPicture();
     }
-  });
+  }
+
+  function closeBigPicture () {
+    const loadMoreButton = document.querySelector('.social__comments-loader');
+    loadMoreButton.replaceWith(loadMoreButton.cloneNode(true));
+    userPictureElement.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+    userPictureCloseElement.removeEventListener('click', closeBigPicture);
+    document.removeEventListener('keydown', handleEscKeydown);
+  }
+
+  userPictureCloseElement.addEventListener('click', closeBigPicture);
+
+  document.addEventListener('keydown', handleEscKeydown);
 
   userPictureElement.querySelector('.big-picture__img img').src = url;
   userPictureElement.querySelector('.big-picture__img img').alt = description;
@@ -31,7 +46,7 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
 
 
   commentsContainerElement.innerHTML = '';
-  const firstComments = comments.slice(0, 5);
+  const firstComments = comments.slice(0, COMMENTS_STEP);
   firstComments.forEach(({name, avatar, message}) => {
     const element = сommentTemplate.cloneNode(true);
     element.querySelector('.social__picture').src = avatar;
@@ -42,15 +57,15 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
 
   shownCommentsElement.textContent = firstComments.length;
 
-  if (comments.length > 5) {
+  if (comments.length > COMMENTS_STEP) {
     const loadMoreButton = document.querySelector('.social__comments-loader');
     commentLoader.classList.remove('hidden');
 
 
-    let lastIndex = firstComments.length - 1;
+    let lastIndex = firstComments.length;
 
     const handleLoadMoreButtonClick = () => {
-      const nextComments = comments.slice(lastIndex, lastIndex + 5);
+      const nextComments = comments.slice(lastIndex, lastIndex + COMMENTS_STEP);
       nextComments.forEach(({name, avatar, message}) => {
         const element = сommentTemplate.cloneNode(true);
         element.querySelector('.social__picture').src = avatar;
@@ -59,9 +74,9 @@ function openBigPicture ({url, description, likes, comments}) { //открыва
         commentsContainerElement.appendChild(element);
       });
 
-      lastIndex = lastIndex + 5 >= comments.length ? comments.length - 1 : lastIndex + 5;
-      shownCommentsElement.textContent = lastIndex + 1;
-      if (lastIndex + 1 >= comments.length) {
+      lastIndex = lastIndex + COMMENTS_STEP >= comments.length ? comments.length : lastIndex + COMMENTS_STEP;
+      shownCommentsElement.textContent = lastIndex;
+      if (lastIndex >= comments.length) {
         commentLoader.classList.add('hidden');
       }
     };
@@ -74,39 +89,11 @@ function setupHandlers(pictures) {
     element.addEventListener('click', (evt) => {
       const targetElement = evt.target.tagName === 'A' ? evt.target : evt.target.parentElement;
 
-      const id = Number.parseInt(targetElement.dataset.id, 10);
+      const id = Number.parseInt(targetElement.dataset.id, COUNTING_BASE);
       const picture = pictures.find((item) => item.id === id);
       openBigPicture(picture);
     });
   });
 }
 
-const openCloseBigPicture = () => {
-  const userPictureCloseElement = userPictureElement.querySelector('.big-picture__cancel');
-
-  function closeBigPicture () {
-    const loadMoreButton = document.querySelector('.social__comments-loader');
-    loadMoreButton.replaceWith(loadMoreButton.cloneNode(true));
-    userPictureElement.classList.add('hidden');
-    document.addEventListener('keydown', (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        userPictureElement.classList.add('hidden');
-      }
-    });
-  }
-
-  userPictureCloseElement.addEventListener('click', () => {
-    closeBigPicture();
-  });
-
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      closeBigPicture();
-    }
-  });
-
-};
-
-export { openCloseBigPicture };
 export { setupHandlers };
