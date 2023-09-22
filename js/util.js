@@ -27,7 +27,6 @@ function shuffle(array) {
   return array;
 }
 
-//debounce
 function debounce (callback, timeoutDelay = 500) {
   let timeoutId;
 
