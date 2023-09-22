@@ -59,7 +59,6 @@ imgUploadСancel.addEventListener('click', () => {
   closeDownloadForm();
 });
 
-// Комментарий, хештег
 const pristine = new Pristine(formElement, {
   classTo: 'img-upload__field-wrapper',
   errorClass: 'img-upload__text--invalid',
@@ -216,7 +215,6 @@ pristine.addValidator(imgHashtags, () => {
   return true;
 }, 'Хэш-тэг может состоять только из букв и цифр и должен начинаться с #');
 
-//масштаб
 function getControlValueAsNumber() {
   return Number.parseInt(controlValue.value.replace('%', ''), COUNTING_BASE);
 }
@@ -231,7 +229,6 @@ controlBig.addEventListener('click', () => {
   imgPreview.style.transform = `scale(${nextValue / 100})`;
 });
 
-//эффекты
 effectLevelElement.classList.add('hidden');
 
 for (let i = 0; i < filterArray.length; i++) {
