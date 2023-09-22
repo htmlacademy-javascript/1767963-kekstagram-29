@@ -1,27 +1,52 @@
 import {compareNumeric, debounce, shuffle} from './util.js';
-const photosListElement = document.querySelector('.pictures'); //нашли большую секцию
-const PhotoTemplate = document.querySelector('#picture').content.querySelector('.picture'); //нашти темплейт и внутри темплейта
+import { setupHandlers } from'./big-picture.js';
+
+const photosListElement = document.querySelector('.pictures');
+const PhotoTemplate = document.querySelector('#picture').content.querySelector('.picture');
+const TIMEOUT_DELAY = 500;
+const imgFilterSection = document.querySelector('.img-filters');
+const imgFilteFormElement = document.querySelector('.img-filters__form');
+const RANDOM_FOTOS_NUMBER = 10;
 
 const renderPhotos = (photos) => {
   const photosListFragment = document.createDocumentFragment();
 
-  photos.forEach(({url, description, likes, comments, id}) => {//копия массива фоток? нужна?
+  photos.forEach(({url, description, likes, comments, id}) => {
     const photoElement = PhotoTemplate.cloneNode(true);
 
-    photoElement.querySelector('.picture__img').src = url; //передаем переменные из дата джс
+    photoElement.querySelector('.picture__img').src = url;
     photoElement.querySelector('.picture__img').alt = description;
     photoElement.querySelector('.picture__likes').textContent = likes;
     photoElement.querySelector('.picture__comments').textContent = comments.length;
     photoElement.dataset.id = id;
-    photosListElement.appendChild(photoElement); //клонируем элемент и размножаем
+    photosListElement.appendChild(photoElement);
   });
-
 
   photosListElement.appendChild(photosListFragment);
 };
 
-const imgFilterSection = document.querySelector('.img-filters');
-const imgFilteFormElement = document.querySelector('.img-filters__form');
+function updatePreviews(photos, id) {
+  const previewElements = document.querySelectorAll('.pictures .picture');
+
+  Array.from(previewElements).forEach((element) => {
+    element.remove();
+  });
+
+
+  if (id === 'filter-default') {
+    renderPhotos(photos);
+    setupHandlers(photos);
+  } else if (id === 'filter-discussed') {
+    renderPhotos(photos.sort(compareNumeric));
+    setupHandlers(photos);
+  } else if (id === 'filter-random') {
+    const nextPhotos = shuffle(photos).slice(0, RANDOM_FOTOS_NUMBER);
+    renderPhotos(nextPhotos);
+    setupHandlers(nextPhotos);
+  }
+}
+
+const debouncedUpdatePreviews = debounce(updatePreviews, TIMEOUT_DELAY);
 
 function showFilter(photos) {
   imgFilterSection.classList.remove('img-filters--inactive');
@@ -33,44 +58,11 @@ function showFilter(photos) {
     }
     const activeButton = imgFilteFormElement.querySelector(`#${evt.target.id}`);
     activeButton.classList.add('img-filters__button--active');
-    const originalPhotos = photos.slice();
-
-    const previewElements = document.querySelectorAll('.pictures .picture');
-
-    console.log('previewElements:', previewElements);
-    Array.from(previewElements).forEach((element) => {
-      element.remove();
-    });
-
-    if (evt.target.id === 'filter-default') {
-      renderPhotos(originalPhotos);
-    } else if (evt.target.id === 'filter-discussed') {
-      renderPhotos(photos.sort(compareNumeric));
-    } else if (evt.target.id === 'filter-random') {
-      renderPhotos(shuffle(photos).slice(0, 10));
-    }
+    debouncedUpdatePreviews(photos.slice(), evt.target.id);
 
   };
-  const debouncedFilterClickHandler = debounce(filterClickHandler, 500);
 
-  imgFilteFormElement.addEventListener('click', debouncedFilterClickHandler);
+  imgFilteFormElement.addEventListener('click', filterClickHandler);
 }
+
 export { renderPhotos, showFilter };
-
-const imgFilters = (renderPhotos) => {
-  const defaultButton = document.getElementById('filter-default');
-  const randomButton = document.getElementById('filter-random');
-  const discussedButton = document.getElementById('filter-discussed');
-  const comment = document.querySelectorAll('.picture__comments');
-
-    const commentNumbers = () => Array.from({length: 25}, comment);
-  if (randomButton.addEventListener('click')){
-    commentNumbers.slice(0, 9);
-  }
-  if (discussedButton.addEventListener('click')){
-    commentNumbers.sort(compareNumeric);
-  }
-  if (defaultButton.addEventListener('click')){
-  }
-
-};

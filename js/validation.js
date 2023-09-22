@@ -1,9 +1,9 @@
 import {isEscapeKey} from './util.js';
 
-const imgUploadInput = document.querySelector('.img-upload__input');//кнопка для лисенира
+const imgUploadInput = document.querySelector('.img-upload__input');
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');
 const imgUploadBody = document.querySelector('body');
-const imgUploadСancel = document.querySelector('.img-upload__cancel'); //кнопка закрытия
+const imgUploadСancel = document.querySelector('.img-upload__cancel');
 const formElement = document.querySelector('.img-upload__form');
 const imgHashtags = document.querySelector('.text__hashtags');
 const imgPreview = document.querySelector('.img-upload__preview');
@@ -11,8 +11,15 @@ const commentElement = document.querySelector('.text__description');
 const effectLevelElement = document.querySelector('.img-upload__effect-level');
 const sliderElement = document.querySelector('.effect-level__slider');
 const effectValueElement = document.querySelector('.effect-level__value');
-
 const filterArray = document.querySelectorAll('.effects__radio');
+const controlSmall = document.querySelector('.scale__control--smaller');
+const controlBig = document.querySelector('.scale__control--bigger');
+const controlValue = document.querySelector('.scale__control--value');
+const submitButton = document.querySelector('.img-upload__submit');
+const SCALE_STAP = 25;
+const COUNTING_BASE = 10;
+const MAX_HASHTAG_LENGTH = 20;
+const MAX_HASHTAGS_COUNT = 5;
 let isModalOpen = false;
 
 function openDownloadForm () {
@@ -24,9 +31,18 @@ imgUploadInput.addEventListener('change', () => {
   openDownloadForm();
 });
 
+function resetForm() {
+  formElement.reset();
+  imgPreview.style = null;
+  effectLevelElement.classList.add('hidden');
+  imgPreview.style.filter = null;
+}
+
+
 function closeDownloadForm () {
   imgUploadBody.classList.remove('modal-open');
   imgUploadOverlay.classList.add('hidden');
+  resetForm();
 }
 
 document.addEventListener('keydown', (evt) => {
@@ -55,10 +71,8 @@ function showSuccessModal() {
   isModalOpen = true;
   const successTemplate = document.querySelector('#success').content;
   document.body.appendChild(successTemplate.cloneNode(true));
-
   const modalElement = document.querySelector('.success');
-
-  const successButton = document.querySelector('.success__button');//кнопка закрытия
+  const successButton = document.querySelector('.success__button');
 
   const closeModal = (evt) => {
     const innerElement = document.querySelector('.success__inner');
@@ -90,40 +104,38 @@ function showErrorModal () {
 
   const modalElement = document.querySelector('.error');
 
-  const successButton = document.querySelector('.error__button');//кнопка закрытия
+  const errorButton = document.querySelector('.error__button');
 
-  const closeModal = () => {
+  const closeModal = (evt) => {
+    const innerElement = document.querySelector('.error__inner');
+
+    if (evt.type !== 'keydown' && evt.target !== errorButton && innerElement.contains(evt.target)) {
+      return;
+    }
+
     isModalOpen = false;
     modalElement.remove();
   };
 
   const handleEscKeydown = (evt) => {
     if (isEscapeKey(evt)) {
-      closeModal();
+      closeModal(evt);
       document.removeEventListener('keydown', handleEscKeydown);
     }
   };
 
-  successButton.addEventListener('click', closeModal);
+  errorButton.addEventListener('click', closeModal);
   modalElement.addEventListener('click', closeModal);
   document.addEventListener('keydown', handleEscKeydown);
-}
-
-function resetForm() {
-  formElement.reset();
-  imgPreview.style = null;
-  effectLevelElement.classList.add('hidden');
-  imgPreview.style.filter = null;
 }
 
 formElement.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
-  console.log('form is valid:', isValid);
 
   if (isValid) {
     const formData = new FormData(evt.target);
-
+    submitButton.disabled = true;
     fetch('https://29.javascript.pages.academy/kekstagram',
       {
         method: 'POST',
@@ -136,13 +148,12 @@ formElement.addEventListener('submit', (evt) => {
         resetForm();
         showSuccessModal();
         closeDownloadForm();
+        submitButton.disabled = false;
       })
-      .catch((err) => {
+      .catch(() => {
+        submitButton.disabled = false;
         showErrorModal();
-        console.log(err);
       });
-  } else {
-    console.log('prisine:', pristine.getErrors());
   }
 
 });
@@ -153,7 +164,7 @@ pristine.addValidator(imgHashtags, () => {
   }
   const hashtags = imgHashtags.value.split(' ');
 
-  return hashtags.length <= 5;
+  return hashtags.length <= MAX_HASHTAGS_COUNT;
 }, 'Количество элементов массива не больше 5');
 
 pristine.addValidator(imgHashtags, () => {
@@ -164,7 +175,7 @@ pristine.addValidator(imgHashtags, () => {
 
   for (let i = 0; i < hashtags.length; i++) {
     for (let j = i + 1; j < hashtags.length; j++) {
-      if (hashtags[i] === hashtags[j]) {
+      if (hashtags[i].toLowerCase() === hashtags[j].toLowerCase()) {
         return false;
       }
     }
@@ -180,7 +191,7 @@ pristine.addValidator(imgHashtags, () => {
 
   const hashtags = imgHashtags.value.split(' ');
   for (let i = 0; i < hashtags.length; i++) {
-    if (hashtags[i].length > 20) {
+    if (hashtags[i].length > MAX_HASHTAG_LENGTH) {
       return false;
     }
   }
@@ -206,27 +217,21 @@ pristine.addValidator(imgHashtags, () => {
 }, 'Хэш-тэг может состоять только из букв и цифр и должен начинаться с #');
 
 //масштаб
-const controlSmall = document.querySelector('.scale__control--smaller');
-const controlBig = document.querySelector('.scale__control--bigger');
-const controlValue = document.querySelector('.scale__control--value');
-
-
 function getControlValueAsNumber() {
-  return Number.parseInt(controlValue.value.replace('%', ''), 10);
+  return Number.parseInt(controlValue.value.replace('%', ''), COUNTING_BASE);
 }
 controlSmall.addEventListener('click', () => {
-  const nextValue = Math.max(getControlValueAsNumber() - 25, 25);
+  const nextValue = Math.max(getControlValueAsNumber() - SCALE_STAP, SCALE_STAP);
   controlValue.value = `${nextValue}%`;
   imgPreview.style.transform = `scale(${nextValue / 100})`;
 });
 controlBig.addEventListener('click', () => {
-  const nextValue = Math.min(getControlValueAsNumber() + 25, 100);
+  const nextValue = Math.min(getControlValueAsNumber() + SCALE_STAP, 100);
   controlValue.value = `${nextValue}%`;
   imgPreview.style.transform = `scale(${nextValue / 100})`;
 });
 
 //эффекты
-
 effectLevelElement.classList.add('hidden');
 
 for (let i = 0; i < filterArray.length; i++) {
@@ -317,4 +322,3 @@ sliderElement.noUiSlider.on('update', () => {
     }
   }
 });
-// не забыть про вывоз сообщения
