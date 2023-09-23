@@ -2,12 +2,17 @@ import {isEscapeKey} from './util.js';
 
 const userPictureElement = document.querySelector('.big-picture');
 const userPictureCloseElement = userPictureElement.querySelector('.big-picture__cancel');
+const commentsContainerElement = userPictureElement.querySelector('.social__comments');
+const сommentTemplate = document.querySelector('#comment').content;
+const socialCommentCount = document.querySelector('.social__comment-count');
+const commentLoader = document.querySelector('.comments-loader');
+const shownCommentsElement = document.querySelector('.comments-count-shown');
+const loadMoreButton = document.querySelector('.social__comments-loader');
+const body = document.querySelector('body');
 const COMMENTS_STEP = 5;
 const COUNTING_BASE = 10;
 
 function openBigPicture ({url, description, likes, comments}) {
-
-  const body = document.querySelector('body');
   body.classList.add('modal-open');
   userPictureElement.classList.remove('hidden');
 
@@ -18,7 +23,6 @@ function openBigPicture ({url, description, likes, comments}) {
   }
 
   function closeBigPicture () {
-    const loadMoreButton = document.querySelector('.social__comments-loader');
     loadMoreButton.replaceWith(loadMoreButton.cloneNode(true));
     userPictureElement.classList.add('hidden');
     document.body.classList.remove('modal-open');
@@ -35,15 +39,9 @@ function openBigPicture ({url, description, likes, comments}) {
   userPictureElement.querySelector('.social__caption').textContent = description;
   userPictureElement.querySelector('.likes-count').textContent = likes;
   userPictureElement.querySelector('.comments-count').textContent = comments.length;
-  const commentsContainerElement = userPictureElement.querySelector('.social__comments');
-  const сommentTemplate = document.querySelector('#comment').content;
 
-  const socialCommentCount = document.querySelector('.social__comment-count');
   socialCommentCount.classList.remove('hidden');
-  const commentLoader = document.querySelector('.comments-loader');
   commentLoader.classList.add('hidden');
-  const shownCommentsElement = document.querySelector('.comments-count-shown');
-
 
   commentsContainerElement.innerHTML = '';
   const firstComments = comments.slice(0, COMMENTS_STEP);
@@ -58,9 +56,8 @@ function openBigPicture ({url, description, likes, comments}) {
   shownCommentsElement.textContent = firstComments.length;
 
   if (comments.length > COMMENTS_STEP) {
-    const loadMoreButton = document.querySelector('.social__comments-loader');
-    commentLoader.classList.remove('hidden');
 
+    commentLoader.classList.remove('hidden');
 
     let lastIndex = firstComments.length;
 

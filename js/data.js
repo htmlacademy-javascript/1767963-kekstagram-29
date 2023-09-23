@@ -2,7 +2,7 @@ import {getRandomInteger} from './util.js';
 
 const NAMES = ['Гор', 'Исида', 'Сет', 'Маат', 'Бастет', 'Осирис', 'Птах', 'Ра', 'Сехмет', 'Тот', 'Хеп', 'Ях', 'Шу', 'Хаухет', 'Хатор', 'Серкет', 'Нейт', 'Монту', 'Геб', 'Бенну', 'Бат', 'Атум', 'Атон', 'Ба', 'Атон'];
 
-const MESSAGE = ['Всё отлично!',
+const MESSAGES = ['Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра.',
   ' В конце концов это просто непрофессионально.',
@@ -12,7 +12,7 @@ const MESSAGE = ['Всё отлично!',
   'Как можно было поймать такой неудачный момент?!',
   'У меня получилась фотография лучше.'];
 
-const DESCRIPTION = ['развитие ценностей.', 'значение совершенной', 'Активно развивая активности', 'Полет с их данными', 'возрастает необходимость', 'общества нашей неузнаваемости',
+const DESCRIPTIONS = ['развитие ценностей.', 'значение совершенной', 'Активно развивая активности', 'Полет с их данными', 'возрастает необходимость', 'общества нашей неузнаваемости',
   'рост сомнений', 'значение мира', 'совершенный статус'];
 
 const RANDOM_PHOTO_OBJECT_COUNT = 25;
@@ -22,8 +22,8 @@ const generateRandomMessage = () => {
   let message = '';
 
   for(let i = 0; i < messageCount; i++) {
-    const randomMessageIndex = getRandomInteger(0, MESSAGE.length - 1);
-    message = message + MESSAGE[randomMessageIndex];
+    const randomMessageIndex = getRandomInteger(0, MESSAGES.length - 1);
+    message = message + MESSAGES[randomMessageIndex];
   }
 
   return message;
@@ -42,10 +42,10 @@ const commentsObject = (value, index) => {
 };
 
 
-const photoObject = (value, index) => {
+const createPhotoObject = (value, index) => {
   const randomNameIndex = getRandomInteger(0, NAMES.length - 1);
-  const randomMessageIndex = getRandomInteger(0, MESSAGE.length - 1);
-  const randomDescriptionIndex = getRandomInteger(0, DESCRIPTION.length - 1);
+  const randomMessageIndex = getRandomInteger(0, MESSAGES.length - 1);
+  const randomDescriptionIndex = getRandomInteger(0, DESCRIPTIONS.length - 1);
   const randomIndexAvatar = getRandomInteger(1, 6);
   const randomLikes = getRandomInteger(0, 300);
   const randomComments = Array.from({length: getRandomInteger(0, 30)}, commentsObject);
@@ -53,15 +53,15 @@ const photoObject = (value, index) => {
   return {
     id: index + 1,
     url: `photos/${(index + 1)}.jpg`,
-    description: DESCRIPTION[randomDescriptionIndex],
+    description: DESCRIPTIONS[randomDescriptionIndex],
     likes: randomLikes,
     comments: randomComments,
     avatar: `img/avatar-${(randomIndexAvatar)}.svg`,
-    message: MESSAGE[randomMessageIndex],
+    message: MESSAGES[randomMessageIndex],
     name: NAMES[randomNameIndex],
   };
 };
 
-const createPhotos = () => Array.from({length: RANDOM_PHOTO_OBJECT_COUNT}, photoObject);
+const createPhotos = () => Array.from({length: RANDOM_PHOTO_OBJECT_COUNT}, createPhotoObject);
 
 export { createPhotos };
