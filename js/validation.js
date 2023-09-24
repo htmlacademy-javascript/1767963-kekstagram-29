@@ -157,11 +157,15 @@ formElement.addEventListener('submit', (evt) => {
 
 });
 
+function parseHashtags(tags) {
+  return tags.split(' ').filter((tag) => tag !== '');
+}
+
 pristine.addValidator(imgHashtags, () => {
   if (imgHashtags.value === '') {
     return true;
   }
-  const hashtags = imgHashtags.value.split(' ');
+  const hashtags = parseHashtags(imgHashtags.value);
 
   return hashtags.length <= MAX_HASHTAGS_COUNT;
 }, 'Количество элементов массива не больше 5');
@@ -170,7 +174,7 @@ pristine.addValidator(imgHashtags, () => {
   if (imgHashtags.value === '') {
     return true;
   }
-  const hashtags = imgHashtags.value.split(' ');
+  const hashtags = parseHashtags(imgHashtags.value);
 
   for (let i = 0; i < hashtags.length; i++) {
     for (let j = i + 1; j < hashtags.length; j++) {
@@ -188,7 +192,7 @@ pristine.addValidator(imgHashtags, () => {
     return true;
   }
 
-  const hashtags = imgHashtags.value.split(' ');
+  const hashtags = parseHashtags(imgHashtags.value);
   for (let i = 0; i < hashtags.length; i++) {
     if (hashtags[i].length > MAX_HASHTAG_LENGTH) {
       return false;
@@ -204,7 +208,7 @@ pristine.addValidator(imgHashtags, () => {
   if (imgHashtags.value === '') {
     return true;
   }
-  const hashtags = imgHashtags.value.split(' ');
+  const hashtags = parseHashtags(imgHashtags.value);
 
   for (let i = 0; i < hashtags.length; i++) {
     if (!regHashtag.test(hashtags[i])) {
@@ -244,7 +248,7 @@ for (let i = 0; i < filterArray.length; i++) {
           min: 0,
           max: 1,
         },
-        start: 0,
+        start: 1,
         step: 0.1,
       });
     } else if (evt.target.value === 'sepia') {
@@ -254,7 +258,7 @@ for (let i = 0; i < filterArray.length; i++) {
           min: 0,
           max: 1,
         },
-        start: 0,
+        start: 1,
         step: 0.1,
       });
     } else if (evt.target.value === 'marvin') {
@@ -264,7 +268,7 @@ for (let i = 0; i < filterArray.length; i++) {
           min: 0,
           max: 100,
         },
-        start: 0,
+        start: 100,
         step: 1,
       });
     }else if (evt.target.value === 'phobos') {
@@ -274,7 +278,7 @@ for (let i = 0; i < filterArray.length; i++) {
           min: 0,
           max: 3,
         },
-        start: 0,
+        start: 3,
         step: 0.1,
       });
     }else if (evt.target.value === 'heat') {
@@ -285,7 +289,7 @@ for (let i = 0; i < filterArray.length; i++) {
           max: 3,
         },
         step: 0.1,
-        start: 1,
+        start: 3,
       });
     }
   });
