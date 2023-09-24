@@ -50,7 +50,7 @@ const debouncedUpdatePreviews = debounce(updatePreviews, TIMEOUT_DELAY);
 
 function showFilter(photos) {
   imgFilterSection.classList.remove('img-filters--inactive');
-  const filterClickHandler = (evt) => {
+  const imgFilteFormElementClickHandler = (evt) => {
     const buttons = imgFilteFormElement.children;
 
     for(let i = 0; i < buttons.length; i++) {
@@ -62,7 +62,7 @@ function showFilter(photos) {
 
   };
 
-  imgFilteFormElement.addEventListener('click', filterClickHandler);
+  imgFilteFormElement.addEventListener('click', imgFilteFormElementClickHandler);
 }
 
 export { renderPhotos, showFilter };
