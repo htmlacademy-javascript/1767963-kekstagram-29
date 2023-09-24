@@ -73,7 +73,7 @@ function showSuccessModal() {
   const modalElement = document.querySelector('.success');
   const successButton = document.querySelector('.success__button');
 
-  const closeModal = (evt) => {
+  const closeModalClickHandler = (evt) => {
     const innerElement = document.querySelector('.success__inner');
 
     if (evt.type !== 'keydown' && evt.target !== successButton && innerElement.contains(evt.target)) {
@@ -84,16 +84,16 @@ function showSuccessModal() {
     modalElement.remove();
   };
 
-  const handleEscKeydown = (evt) => {
+  const escKeydownHandler = (evt) => {
     if (isEscapeKey(evt)) {
-      closeModal(evt);
-      document.removeEventListener('keydown', handleEscKeydown);
+      closeModalClickHandler(evt);
+      document.removeEventListener('keydown', escKeydownHandler);
     }
   };
 
-  successButton.addEventListener('click', closeModal);
-  modalElement.addEventListener('click', closeModal);
-  document.addEventListener('keydown', handleEscKeydown);
+  successButton.addEventListener('click', closeModalClickHandler);
+  modalElement.addEventListener('click', closeModalClickHandler);
+  document.addEventListener('keydown', escKeydownHandler);
 }
 
 function showErrorModal () {
@@ -105,7 +105,7 @@ function showErrorModal () {
 
   const errorButton = document.querySelector('.error__button');
 
-  const closeModal = (evt) => {
+  const closeModalClickHandler = (evt) => {
     const innerElement = document.querySelector('.error__inner');
 
     if (evt.type !== 'keydown' && evt.target !== errorButton && innerElement.contains(evt.target)) {
@@ -116,16 +116,16 @@ function showErrorModal () {
     modalElement.remove();
   };
 
-  const handleEscKeydown = (evt) => {
+  const escKeydownHandler = (evt) => {
     if (isEscapeKey(evt)) {
-      closeModal(evt);
-      document.removeEventListener('keydown', handleEscKeydown);
+      closeModalClickHandler(evt);
+      document.removeEventListener('keydown', escKeydownHandler);
     }
   };
 
-  errorButton.addEventListener('click', closeModal);
-  modalElement.addEventListener('click', closeModal);
-  document.addEventListener('keydown', handleEscKeydown);
+  errorButton.addEventListener('click', closeModalClickHandler);
+  modalElement.addEventListener('click', closeModalClickHandler);
+  document.addEventListener('keydown', escKeydownHandler);
 }
 
 formElement.addEventListener('submit', (evt) => {
@@ -162,7 +162,7 @@ function parseHashtags(tags) {
 }
 
 pristine.addValidator(imgHashtags, () => {
-  if (imgHashtags.value === '') {
+  if (!imgHashtags.value) {
     return true;
   }
   const hashtags = parseHashtags(imgHashtags.value);
@@ -171,7 +171,7 @@ pristine.addValidator(imgHashtags, () => {
 }, 'Количество элементов массива не больше 5');
 
 pristine.addValidator(imgHashtags, () => {
-  if (imgHashtags.value === '') {
+  if (!imgHashtags.value) {
     return true;
   }
   const hashtags = parseHashtags(imgHashtags.value);
@@ -188,7 +188,7 @@ pristine.addValidator(imgHashtags, () => {
 }, 'один и тот же хэш-тег не может быть использован дважды');
 
 pristine.addValidator(imgHashtags, () => {
-  if (imgHashtags.value === '') {
+  if (!imgHashtags.value) {
     return true;
   }
 
@@ -205,7 +205,7 @@ pristine.addValidator(imgHashtags, () => {
 const regHashtag = /^#[a-zа-яё0-9]{1,20}$/i;
 
 pristine.addValidator(imgHashtags, () => {
-  if (imgHashtags.value === '') {
+  if (!imgHashtags.value) {
     return true;
   }
   const hashtags = parseHashtags(imgHashtags.value);

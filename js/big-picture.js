@@ -5,34 +5,33 @@ const userPictureCloseElement = userPictureElement.querySelector('.big-picture__
 const commentsContainerElement = userPictureElement.querySelector('.social__comments');
 const сommentTemplate = document.querySelector('#comment').content;
 const socialCommentCount = document.querySelector('.social__comment-count');
-const commentLoader = document.querySelector('.comments-loader');
 const shownCommentsElement = document.querySelector('.comments-count-shown');
-const loadMoreButton = document.querySelector('.social__comments-loader');
 const body = document.querySelector('body');
 const COMMENTS_STEP = 5;
 const COUNTING_BASE = 10;
 
 function openBigPicture ({url, description, likes, comments}) {
+  const loadMoreButton = document.querySelector('.social__comments-loader');
   body.classList.add('modal-open');
   userPictureElement.classList.remove('hidden');
 
-  function handleEscKeydown(evt) {
+  function escKeydownHandler(evt) {
     if (isEscapeKey(evt)) {
-      closeBigPicture();
+      bigPictureCancelClickHandler();
     }
   }
 
-  function closeBigPicture () {
+  function bigPictureCancelClickHandler () {
     loadMoreButton.replaceWith(loadMoreButton.cloneNode(true));
     userPictureElement.classList.add('hidden');
     document.body.classList.remove('modal-open');
-    userPictureCloseElement.removeEventListener('click', closeBigPicture);
-    document.removeEventListener('keydown', handleEscKeydown);
+    userPictureCloseElement.removeEventListener('click', bigPictureCancelClickHandler);
+    document.removeEventListener('keydown', escKeydownHandler);
   }
 
-  userPictureCloseElement.addEventListener('click', closeBigPicture);
+  userPictureCloseElement.addEventListener('click', bigPictureCancelClickHandler);
 
-  document.addEventListener('keydown', handleEscKeydown);
+  document.addEventListener('keydown', escKeydownHandler);
 
   userPictureElement.querySelector('.big-picture__img img').src = url;
   userPictureElement.querySelector('.big-picture__img img').alt = description;
@@ -41,7 +40,7 @@ function openBigPicture ({url, description, likes, comments}) {
   userPictureElement.querySelector('.comments-count').textContent = comments.length;
 
   socialCommentCount.classList.remove('hidden');
-  commentLoader.classList.add('hidden');
+  loadMoreButton.classList.add('hidden');
 
   commentsContainerElement.innerHTML = '';
   const firstComments = comments.slice(0, COMMENTS_STEP);
@@ -57,11 +56,10 @@ function openBigPicture ({url, description, likes, comments}) {
 
   if (comments.length > COMMENTS_STEP) {
 
-    commentLoader.classList.remove('hidden');
-
+    loadMoreButton.classList.remove('hidden');
     let lastIndex = firstComments.length;
 
-    const handleLoadMoreButtonClick = () => {
+    const loadMoreButtonClickHandler = () => {
       const nextComments = comments.slice(lastIndex, lastIndex + COMMENTS_STEP);
       nextComments.forEach(({name, avatar, message}) => {
         const element = сommentTemplate.cloneNode(true);
@@ -74,10 +72,10 @@ function openBigPicture ({url, description, likes, comments}) {
       lastIndex = lastIndex + COMMENTS_STEP >= comments.length ? comments.length : lastIndex + COMMENTS_STEP;
       shownCommentsElement.textContent = lastIndex;
       if (lastIndex >= comments.length) {
-        commentLoader.classList.add('hidden');
+        loadMoreButton.classList.add('hidden');
       }
     };
-    loadMoreButton.addEventListener('click', handleLoadMoreButtonClick);
+    loadMoreButton.addEventListener('click', loadMoreButtonClickHandler);
   }
 }
 
